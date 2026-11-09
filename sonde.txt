@@ -1,0 +1,46 @@
+== date
+Mon Nov  9 20:30:24 UTC 2026
+== EUMETView capabilities
+http=200 octets=282238
+eps:m01_ir108
+eps:m02_ir108
+eps:m03_ir108
+msg_cth
+msg_fes:cth
+msg_fes:h60b
+msg_fes:ir108
+msg_fes:rdt
+msg_fes:rdt_black
+msg_fes:rdt_red
+msg_fes:rdt_white
+msg_fes:rgb_convection
+msg_h60b_h63
+msg_iodc:cth
+msg_iodc:h63
+msg_iodc:ir108
+msg_iodc:rgb_convection
+mtg_fd:h40b
+mtg_fd:ir105_hrfi
+mtg_fd:li_afa
+mtg_fd:mtg_fd_ir105_hrfi_grayscale
+mtg_fd:mtg_fd_ir105_hrfi_style_01
+mtg_fd:mtg_fd_ir105_hrfi_style_02
+mtg_fd:mtg_h40b_default
+mtg_fd:rgb_firetemperature
+mtg_li_afa
+mumi:worldcloudmap_ir108
+== GetFeatureInfo formats
+<Format>text/plain</Format>
+<Format>application/vnd.ogc.gml</Format>
+<Format>text/xml</Format>
+<Format>application/vnd.ogc.gml/3.1.1</Format>
+<Format>text/xml; subtype=gml/3.1.1</Format>
+<Format>text/html</Format>
+<Format>application/json</Format>
+== RainViewer
+{"version":"2.0","generated":1794256221,"host":"https://tilecache.rainviewer.com","radar":{"past":[{"time":1794249000,"path":"/v2/radar/251c9d303068"},{"time":1794249600,"path":"/v2/radar/c1ee90140a1c"},{"time":1794250200,"path":"/v2/radar/4f5fd114e3ff"},{"time":1794250800,"path":"/v2/radar/34b2c0831afd"},{"time":1794251400,"path":"/v2/radar/036fcda8e04c"},{"time":1794252000,"path":"/v2/radar/f8dca8b65ae5"},{"time":1794252600,"path":"/v2/radar/227d23c93ccc"},{"time":1794253200,"path":"/v2/radar/d524f3197a43"},{"time":1794253800,"path":"/v2/radar/b100cd729046"},{"time":1794254400,"path":"/v2/ra
+couverture http=200 octets=914
+png True (256, 256)
+== Open-Meteo current + minutely_15
+{"latitude":32.253162,"longitude":-9.2224045,"generationtime_ms":0.09238719940185547,"utc_offset_seconds":0,"timezone":"Africa/Casablanca","timezone_abbreviation":"GMT","elevation":20.0,"current_units":{"time":"iso8601","interval":"seconds","precipitation":"mm","rain":"mm","showers":"mm","weather_code":"wmo code","cape":"J/kg"},"current":{"time":"2026-11-09T20:30","interval":900,"precipitation":0.00,"rain":0.00,"showers":0.00,"weather_code":3,"cape":240.0},"minutely_15_units":{"time":"iso8601","precipitation":"mm","lightning_potential":"J/kg"},"minutely_15":{"time":["2026-11-09T19:30","2026-11-09T19:45","2026-11-09T20:00","2026-11-09T20:15","2026-11-09T20:30","2026-11-09T20:45","2026-11-09T21:00","2026-11-09T21:15","2026-11-09T21:30","2026-11-09T21:45","2026-11-09T22:00","2026-11-09T22:15"],"precipitation":[0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00],"lightning_potential":[null,null,null,null,null,null,null,null,null,null,null,null]}}
+117
