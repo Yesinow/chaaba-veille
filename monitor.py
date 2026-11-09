@@ -13,6 +13,8 @@ import os
 import urllib.parse
 import urllib.request
 
+import nowcast
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(ROOT, "config.json"), encoding="utf-8") as f:
     CFG = json.load(f)
@@ -113,11 +115,14 @@ def analyse(data):
 
 def main():
     worst, model_levels, gust, offset = analyse(fetch())
+    obs = nowcast.observe(CFG)   # ce que le satellite voit maintenant
+    ol = obs.get("level", 0)
     now_utc = dt.datetime.now(dt.timezone.utc)
     now_local = (now_utc + dt.timedelta(seconds=offset)).strftime("%Y-%m-%dT%H:%M")
 
     rl, wl = worst["level"], gust_level(gust["kmh"])
-    level = rl  # le niveau affiche = risque de crue (pluie) ; le vent est donne a part
+    level = max(rl, ol)  # prevision OU observation satellite, le pire des deux
+    #  le niveau affiche = risque de crue (pluie) ; le vent est donne a part
     n_models = len(model_levels)
     agree = sum(1 for v in model_levels.values() if v >= max(rl, 1))
     official = [o for o in CFG.get("official", []) if o["end"] >= now_local]
@@ -126,6 +131,11 @@ def main():
     if wl >= 1:  # le vent peut relever le niveau affiche : le dire clairement
         msg_fr += f" Vent : rafales jusqu'à {gust['kmh']} km/h selon le modèle le plus pessimiste."
         msg_ar += f" الرياح: هبات قد تصل إلى {gust['kmh']} كلم/س حسب أكثر النماذج تشاؤماً."
+    if ol >= 1:  # l'observation en direct passe avant la prevision
+        of, oa = CFG["obs_messages_fr"][ol], CFG["obs_messages_ar"][ol]
+        msg_fr = of if ol > rl else of + " " + msg_fr
+        msg_ar = oa if ol > rl else oa + " " + msg_ar
+        obs["message_fr"], obs["message_ar"] = of, oa
     MSG_FR[rl], MSG_AR[rl] = msg_fr, msg_ar
 
     status_path = os.path.join(ROOT, "status.json")
@@ -145,6 +155,8 @@ def main():
         "level_ar": NAMES_AR[level],
         "message_fr": MSG_FR[rl],
         "message_ar": MSG_AR[rl],
+        "forecast_level": rl,
+        "obs": obs,
         "rain": {
             "level": rl,
             "worst_model": worst["model"],
@@ -172,6 +184,9 @@ def main():
         f"- Scénario le plus pessimiste : modèle `{worst['model']}`, point « {worst['point']} »",
         f"- Accord des modèles : {agree}/{n_models}" + (" (confiance faible)" if agree <= 1 and n_models > 1 else ""),
         f"- Rafale max prévue : {gust['kmh']} km/h (vers {gust['when']})",
+        ("- Satellite (image pluie d'il y a %s min) : %s mm/h max sur 1 h, cumul estimé %s mm, éclairs sur le bassin : %s"
+         % (obs.get("rain_age_min"), obs.get("rate_max_1h_mmh"), obs.get("accum_1h_mm"), "OUI" if obs.get("lightning_basin") else "non"))
+        if obs.get("ok") else "- Observation satellite indisponible pour ce calcul.",
         "- Repère : le 14/12/2025, Safi a reçu environ 19 mm en 1 h et 35 mm en 6 h.",
         "",
         "Heures locales. Estimation automatique à partir de modèles météo, **non officielle**. "

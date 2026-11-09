@@ -4,7 +4,7 @@ import urllib.parse
 import urllib.request
 
 WMS = "https://view.eumetsat.int/geoserver/wms"
-LAYERS = ["mtg_fd:h40b", "msg_fes:h60b", "mtg_fd:li_afa", "msg_fes:rdt", "mtg_fd:ir105_hrfi"]
+LAYERS = []
 
 
 def get(params, n=1500):
@@ -42,3 +42,9 @@ for lay in LAYERS:
     print("GetMap", st, ct, len(body), "octets")
     lg = re.search(r'<LegendURL[^>]*>.*?xlink:href="([^"]+)"', block, re.S)
     print("legende:", lg.group(1).replace("&amp;", "&") if lg else None)
+
+print("===== couches de fond")
+print(sorted(set(n for n in re.findall(r"<Name>([^<]*)</Name>", caps) if re.search(r"coast|border|overlay|background|countr|osm|ne_", n, re.I)))[:60])
+st, ct, body = get({"service": "WMS", "version": "1.3.0", "request": "GetLegendGraphic", "format": "image/png", "width": 640, "height": 80, "layer": "mtg_fd:h40b"})
+open("legende-h40b.png", "wb").write(body)
+print("legende", st, ct, len(body))

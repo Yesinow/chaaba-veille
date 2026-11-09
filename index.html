@@ -26,6 +26,9 @@
   .grid span, .mute { color:var(--mute); font-size:.85rem; }
   .stale { background:#c81e1e; color:#fff; border-radius:10px; padding:10px 14px; margin-bottom:12px; display:none; }
   .rule { border-inline-start:4px solid #c81e1e; }
+  .sat { position:relative; margin-top:10px; background:#0b0f14; border-radius:10px; overflow:hidden; aspect-ratio:4/3; }
+  .sat img { width:100%; height:100%; display:block; object-fit:cover; }
+  .sat i { position:absolute; left:49.1%; top:50%; width:10px; height:10px; margin:-5px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
   a { color:inherit; }
   ul { margin:0; padding-inline-start:20px; }
   .tel { display:flex; gap:8px; direction:ltr; }
@@ -58,6 +61,16 @@
   <div class="card rule">
     <p style="margin:0">إذا كان المطر غزيراً الآن أو بدأ الماء يرتفع في الواد: ابتعد فوراً واصعد إلى مكان مرتفع. لا تنتظر هذه الصفحة.</p>
     <p class="fr" style="margin:6px 0 0">S'il pleut très fort maintenant ou si l'eau monte dans l'oued : éloignez-vous tout de suite et montez en hauteur. N'attendez pas cette page.</p>
+  </div>
+
+  <div class="card">
+    <h2>ما يراه القمر الاصطناعي الآن · Ce que le satellite voit maintenant</h2>
+    <p class="fr" id="obs" style="margin:0">…</p>
+    <div class="sat">
+      <img id="sat" alt="Image satellite Meteosat autour de Safi : nuages, pluie estimée et éclairs">
+      <i></i>
+    </div>
+    <p class="mute fr">Meteosat (EUMETSAT) : nuages, pluie estimée, éclairs. Le point rouge est Safi. Image renouvelée toutes les 5 à 10 min, avec 15 à 50 min de retard.</p>
   </div>
 
   <div class="card">
@@ -194,16 +207,56 @@ function render(s) {
   }
 }
 
-async function refresh() {
-  try { render(await live()); }
-  catch (e) {
-    // Secours : dernier calcul enregistre par le bot.
-    try { render(await (await fetch('status.json?t=' + Date.now())).json()); }
-    catch (e2) { $('lvl').textContent = 'تعذر تحميل البيانات · Données indisponibles'; $('stale').style.display = 'block'; }
+// Dernier calcul du bot (observation satellite incluse), lu sans cache via l'API GitHub.
+async function botStatus() {
+  const owner = location.hostname.split('.')[0], repo = location.pathname.split('/')[1];
+  if (location.hostname.endsWith('.github.io') && repo) {
+    try {
+      const r = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/status.json?t=' + Date.now(),
+                            {headers: {Accept: 'application/vnd.github.raw+json'}});
+      if (r.ok) return await r.json();
+    } catch (e) {}
   }
+  return await (await fetch('status.json?t=' + Date.now())).json();
+}
+
+function renderObs(o, fresh) {
+  if (!o || !o.ok || !fresh) { $('obs').textContent = 'Observation satellite indisponible pour le moment. Regardez le ciel et l’image ci-dessous.'; return; }
+  $('obs').textContent =
+    'Pluie estimée sur le bassin : ' + o.rate_now_mmh + ' mm/h maintenant, ' + o.rate_max_1h_mmh + ' mm/h au plus fort, cumul ' + o.accum_1h_mm + ' mm sur 1 h' +
+    ' (image d’il y a ' + o.rain_age_min + ' min). Éclairs sur le bassin : ' + (o.lightning_basin ? 'OUI' : 'non') +
+    ' · à moins de 60 km : ' + (o.lightning_near ? 'OUI' : 'non') + ' (image d’il y a ' + o.lightning_age_min + ' min).';
+}
+
+function satImage() {
+  const q = new URLSearchParams({service: 'WMS', version: '1.3.0', request: 'GetMap', crs: 'EPSG:4326',
+    layers: SAT_LAYERS, styles: '', bbox: '30.8,-11.2,33.8,-7.2', width: 640, height: 480, format: 'image/jpeg', t: Math.floor(Date.now() / 3e5)});
+  $('sat').src = 'https://view.eumetsat.int/geoserver/wms?' + q;
+}
+const SAT_LAYERS = 'mtg_fd:ir105_hrfi,mtg_fd:h40b,mtg_fd:li_afa';
+
+async function refresh() {
+  satImage();
+  let fc = null, bot = null;
+  try { fc = await live(); } catch (e) {}
+  try { bot = await botStatus(); } catch (e) {}
+  if (bot && (bot.level === undefined || bot.level < 0)) bot = null;
+  const s = fc || bot;
+  if (!s) { $('lvl').textContent = 'تعذر تحميل البيانات · Données indisponibles'; $('stale').style.display = 'block'; return; }
+  // L'observation satellite du bot passe avant la prevision si elle est recente (< 40 min).
+  const o = bot && bot.obs, fresh = bot && (Date.now() - Date.parse(bot.updated_utc)) < 40 * 60e3;
+  renderObs(o, fresh);
+  if (o && o.ok && fresh && o.level >= 1) {
+    const base = s.level;
+    s.message_fr = o.level > base ? o.message_fr : o.message_fr + ' ' + s.message_fr;
+    s.message_ar = o.level > base ? o.message_ar : o.message_ar + ' ' + s.message_ar;
+    s.level = Math.max(base, o.level);
+    s.level_fr = NAMES_FR[s.level]; s.level_ar = NAMES_AR[s.level];
+  }
+  render(s);
 }
 refresh();
-setInterval(refresh, 5 * 60 * 1000);
+setInterval(refresh, 3 * 60 * 1000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
 </script>
 </body>
