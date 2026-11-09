@@ -1,19 +1,63 @@
 {
   "_note": "Points APPROXIMATIFS du bassin de l'oued Chaaba (a affiner avec une carte du bassin versant). Seuils en mm, calibres sur la crue du 14/12/2025 : ce ne sont PAS des seuils officiels.",
   "points": [
-    {"name": "Bab Chaaba (aval)", "lat": 32.300, "lon": -9.236},
-    {"name": "Safi centre", "lat": 32.292, "lon": -9.236},
-    {"name": "Amont nord", "lat": 32.345, "lon": -9.200},
-    {"name": "Amont nord-est", "lat": 32.350, "lon": -9.140},
-    {"name": "Amont est", "lat": 32.300, "lon": -9.150}
+    {
+      "name": "Bab Chaaba (aval)",
+      "lat": 32.3,
+      "lon": -9.236
+    },
+    {
+      "name": "Safi centre",
+      "lat": 32.292,
+      "lon": -9.236
+    },
+    {
+      "name": "Amont nord",
+      "lat": 32.345,
+      "lon": -9.2
+    },
+    {
+      "name": "Amont nord-est",
+      "lat": 32.35,
+      "lon": -9.14
+    },
+    {
+      "name": "Amont est",
+      "lat": 32.3,
+      "lon": -9.15
+    }
   ],
-  "models": ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "meteofrance_seamless"],
+  "models": [
+    "ecmwf_ifs025",
+    "gfs_seamless",
+    "icon_seamless",
+    "meteofrance_seamless"
+  ],
   "rain_thresholds_mm": {
-    "1": {"1h": 5,  "3h": 8,  "6h": 10, "24h": 20},
-    "2": {"1h": 10, "3h": 15, "6h": 20, "24h": 30},
-    "3": {"1h": 19, "3h": 30, "6h": 35, "24h": 46}
+    "1": {
+      "1h": 5,
+      "3h": 8,
+      "6h": 10,
+      "24h": 20
+    },
+    "2": {
+      "1h": 10,
+      "3h": 15,
+      "6h": 20,
+      "24h": 30
+    },
+    "3": {
+      "1h": 19,
+      "3h": 30,
+      "6h": 35,
+      "24h": 46
+    }
   },
-  "gust_thresholds_kmh": {"1": 50, "2": 70, "3": 90},
+  "gust_thresholds_kmh": {
+    "1": 50,
+    "2": 70,
+    "3": 90
+  },
   "official": [
     {
       "source": "DGM, bulletin d'alerte n° 2026/234 du 09/11/2026",
@@ -23,5 +67,17 @@
       "fr": "Vigilance orange : fortes rafales de vent (70 à 80 km/h) avec chasse-poussières, province de Safi.",
       "ar": "يقظة برتقالية: هبات رياح قوية (من 70 إلى 80 كلم/س) مصحوبة بتطاير الغبار، إقليم آسفي."
     }
+  ],
+  "messages_fr": [
+    "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h.",
+    "Pluie notable prévue. Restez informé et surveillez les bulletins officiels.",
+    "Fortes pluies possibles : risque de montée rapide de l'oued Chaâba. Éloignez-vous du lit de l'oued, de Bab Chaâba et des points bas. Mettez véhicules et marchandises à l'abri.",
+    "DANGER : pluies du niveau de la crue du 14/12/2025. Ne restez pas près de l'oued Chaâba ni dans les rez-de-chaussée des zones basses. Montez en hauteur. Ne traversez jamais une rue inondée."
+  ],
+  "messages_ar": [
+    "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة.",
+    "أمطار مهمة متوقعة. ابقَ على اطلاع وتابع النشرات الرسمية.",
+    "أمطار قوية محتملة: خطر ارتفاع سريع لمنسوب واد الشعبة. ابتعد عن مجرى الواد وباب الشعبة والمناطق المنخفضة. ضع السيارات والسلع في مكان آمن.",
+    "خطر: أمطار في مستوى فيضان 14 دجنبر 2025. لا تبقَ قرب واد الشعبة ولا في الطوابق الأرضية بالمناطق المنخفضة. اصعد إلى مكان مرتفع. لا تعبر أبداً شارعاً مغموراً بالمياه."
   ]
 }

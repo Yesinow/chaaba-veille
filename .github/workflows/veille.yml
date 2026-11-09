@@ -2,7 +2,7 @@ name: Veille oued Chaaba
 
 on:
   schedule:
-    - cron: "17 * * * *"   # toutes les heures
+    - cron: "*/10 * * * *"   # toutes les 10 minutes
   workflow_dispatch:
 
 permissions:

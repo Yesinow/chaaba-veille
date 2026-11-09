@@ -21,18 +21,8 @@ WINDOWS = {"1h": 1, "3h": 3, "6h": 6, "24h": 24}
 PAST_HOURS = 6
 NAMES_FR = ["Vert", "Jaune", "Orange", "Rouge"]
 NAMES_AR = ["أخضر", "أصفر", "برتقالي", "أحمر"]
-MSG_FR = [
-    "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h.",
-    "Pluie notable prévue. Restez informé et surveillez les bulletins officiels.",
-    "Fortes pluies possibles : risque de montée rapide de l'oued Chaâba. Éloignez-vous du lit de l'oued, de Bab Chaâba et des points bas. Mettez véhicules et marchandises à l'abri.",
-    "DANGER : pluies du niveau de la crue du 14/12/2025. Ne restez pas près de l'oued Chaâba ni dans les rez-de-chaussée des zones basses. Montez en hauteur. Ne traversez jamais une rue inondée.",
-]
-MSG_AR = [
-    "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة.",
-    "أمطار مهمة متوقعة. ابقَ على اطلاع وتابع النشرات الرسمية.",
-    "أمطار قوية محتملة: خطر ارتفاع سريع لمنسوب واد الشعبة. ابتعد عن مجرى الواد وباب الشعبة والمناطق المنخفضة. ضع السيارات والسلع في مكان آمن.",
-    "خطر: أمطار في مستوى فيضان 14 دجنبر 2025. لا تبقَ قرب واد الشعبة ولا في الطوابق الأرضية بالمناطق المنخفضة. اصعد إلى مكان مرتفع. لا تعبر أبداً شارعاً مغموراً بالمياه.",
-]
+MSG_FR = list(CFG["messages_fr"])
+MSG_AR = list(CFG["messages_ar"])
 
 
 def fetch():
