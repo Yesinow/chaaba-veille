@@ -1,1 +1,57 @@
-{"level": -1}
+{
+  "updated_utc": "2026-11-09T20:21:06Z",
+  "updated_local": "2026-11-09T20:21",
+  "level": 3,
+  "level_fr": "Rouge",
+  "level_ar": "أحمر",
+  "message_fr": "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h. Vent : rafales jusqu'à 94 km/h prévues.",
+  "message_ar": "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة. الرياح: هبات متوقعة تصل إلى 94 كلم/س.",
+  "rain": {
+    "level": 0,
+    "worst_model": "icon_seamless",
+    "worst_point": "Amont nord",
+    "sums": {
+      "1h": {
+        "mm": 3.3,
+        "start": "2026-11-11T18:00"
+      },
+      "3h": {
+        "mm": 4.8,
+        "start": "2026-11-11T17:00"
+      },
+      "6h": {
+        "mm": 5.9,
+        "start": "2026-11-11T14:00"
+      },
+      "24h": {
+        "mm": 8.0,
+        "start": "2026-11-10T20:00"
+      }
+    },
+    "models_agree": 0,
+    "models_total": 4,
+    "model_levels": {
+      "ecmwf_ifs025": 0,
+      "gfs_seamless": 0,
+      "icon_seamless": 0,
+      "meteofrance_seamless": 0
+    }
+  },
+  "wind": {
+    "level": 3,
+    "kmh": 94,
+    "when": "2026-11-11T15:00",
+    "model": "gfs_seamless"
+  },
+  "official": [
+    {
+      "source": "DGM, bulletin d'alerte n° 2026/234 du 09/11/2026",
+      "level": 2,
+      "start": "2026-11-11T12:00",
+      "end": "2026-11-11T23:00",
+      "fr": "Vigilance orange : fortes rafales de vent (70 à 80 km/h) avec chasse-poussières, province de Safi.",
+      "ar": "يقظة برتقالية: هبات رياح قوية (من 70 إلى 80 كلم/س) مصحوبة بتطاير الغبار، إقليم آسفي."
+    }
+  ],
+  "source": "Open-Meteo (ECMWF, GFS, ICON, Meteo-France). Indicatif, non officiel."
+}
