@@ -127,15 +127,15 @@ def main():
     now_local = (now_utc + dt.timedelta(seconds=offset)).strftime("%Y-%m-%dT%H:%M")
 
     rl, wl = worst["level"], gust_level(gust["kmh"])
-    level = max(rl, wl)
+    level = rl  # le niveau affiche = risque de crue (pluie) ; le vent est donne a part
     n_models = len(model_levels)
     agree = sum(1 for v in model_levels.values() if v >= max(rl, 1))
     official = [o for o in CFG.get("official", []) if o["end"] >= now_local]
 
     msg_fr, msg_ar = MSG_FR[rl], MSG_AR[rl]
     if wl >= 1:  # le vent peut relever le niveau affiche : le dire clairement
-        msg_fr += f" Vent : rafales jusqu'à {gust['kmh']} km/h prévues."
-        msg_ar += f" الرياح: هبات متوقعة تصل إلى {gust['kmh']} كلم/س."
+        msg_fr += f" Vent : rafales jusqu'à {gust['kmh']} km/h selon le modèle le plus pessimiste."
+        msg_ar += f" الرياح: هبات قد تصل إلى {gust['kmh']} كلم/س حسب أكثر النماذج تشاؤماً."
     MSG_FR[rl], MSG_AR[rl] = msg_fr, msg_ar
 
     status_path = os.path.join(ROOT, "status.json")
