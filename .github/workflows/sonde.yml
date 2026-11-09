@@ -12,27 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Tester les sources
-        run: |
-          {
-            echo "== date"; date -u
-            echo "== EUMETView capabilities"
-            curl -sS -m 120 -o caps.xml -w "http=%{http_code} octets=%{size_download}\n" "https://view.eumetsat.int/geoserver/wms?service=WMS&version=1.3.0&request=GetCapabilities"
-            grep -o "<Name>[^<]*</Name>" caps.xml | sed 's/<[^>]*>//g' | grep -iE "h60|h63|h40|h03|precip|rain|mpe|crr|rdt|conv|li_|lightning|ir105|ir108|cth|ctth|oca" | sort -u | head -150
-            echo "== GetFeatureInfo formats"
-            tr '\n' ' ' < caps.xml | grep -o "<GetFeatureInfo>.\{0,600\}" | grep -o "<Format>[^<]*</Format>" | head
-            echo "== RainViewer"
-            curl -sS -m 60 "https://api.rainviewer.com/public/weather-maps.json" | head -c 600; echo
-            curl -sS -m 60 -o cov.png -w "couverture http=%{http_code} octets=%{size_download}\n" "https://tilecache.rainviewer.com/v2/coverage/0/256/7/32.30/-9.23/0/0_0.png"
-            python3 -c "import zlib,struct;d=open('cov.png','rb').read();print('png',d[:8]==b'\x89PNG\r\n\x1a\n',struct.unpack('>II',d[16:24]) if len(d)>24 else '')"
-            echo "== Open-Meteo current + minutely_15"
-            curl -sS -m 60 "https://api.open-meteo.com/v1/forecast?latitude=32.30&longitude=-9.236&current=precipitation,rain,showers,weather_code,cape&minutely_15=precipitation,lightning_potential&past_minutely_15=4&forecast_minutely_15=8&timezone=Africa/Casablanca" | head -c 1500; echo
-          } > sonde.txt 2>&1 || true
-          cp cov.png sonde-couverture.png || true
-          grep -c "<Layer" caps.xml >> sonde.txt || true
+        run: python3 sonde.py > sonde.txt 2>&1 || true
       - name: Enregistrer
         run: |
           git config user.name "chaaba-veille-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add sonde.txt sonde-couverture.png
+          git add sonde.txt
           git commit -m "sonde: resultats" || true
           git pull --rebase -q && git push
