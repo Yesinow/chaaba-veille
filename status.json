@@ -1,11 +1,11 @@
 {
-  "updated_utc": "2026-11-09T20:21:06Z",
+  "updated_utc": "2026-11-09T20:21:55Z",
   "updated_local": "2026-11-09T20:21",
-  "level": 3,
-  "level_fr": "Rouge",
-  "level_ar": "أحمر",
-  "message_fr": "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h. Vent : rafales jusqu'à 94 km/h prévues.",
-  "message_ar": "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة. الرياح: هبات متوقعة تصل إلى 94 كلم/س.",
+  "level": 0,
+  "level_fr": "Vert",
+  "level_ar": "أخضر",
+  "message_fr": "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h. Vent : rafales jusqu'à 94 km/h selon le modèle le plus pessimiste.",
+  "message_ar": "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة. الرياح: هبات قد تصل إلى 94 كلم/س حسب أكثر النماذج تشاؤماً.",
   "rain": {
     "level": 0,
     "worst_model": "icon_seamless",
