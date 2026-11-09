@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>يقظة واد الشعبة - آسفي</title>
+<style>
+  :root { --bg:#f4f1ea; --ink:#1c2430; --mute:#5d6875; --card:#fff; --line:#ddd6c8; --lvl:#7a8794; --lvl-ink:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12171d; --ink:#edf0f3; --mute:#9aa6b2; --card:#1b222b; --line:#2c3642; }
+  }
+  body.l0 { --lvl:#2e8b57; } body.l1 { --lvl:#e8b500; --lvl-ink:#1c2430; }
+  body.l2 { --lvl:#e8730c; } body.l3 { --lvl:#c81e1e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui, "Segoe UI", Tahoma, sans-serif; }
+  main { max-width:640px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.15rem; margin:4px 0 12px; }
+  .banner { background:var(--lvl); color:var(--lvl-ink); border-radius:14px; padding:18px; }
+  .banner .lvl { font-size:1.9rem; font-weight:800; line-height:1.2; }
+  .banner p { margin:8px 0 0; }
+  .fr { direction:ltr; text-align:left; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-top:12px; }
+  .card h2 { font-size:1rem; margin:0 0 8px; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center; direction:ltr; }
+  .grid b { display:block; font-size:1.3rem; font-variant-numeric:tabular-nums; }
+  .grid span, .mute { color:var(--mute); font-size:.85rem; }
+  .stale { background:#c81e1e; color:#fff; border-radius:10px; padding:10px 14px; margin-bottom:12px; display:none; }
+  a { color:inherit; }
+  ul { margin:0; padding-inline-start:20px; }
+  .tel { display:flex; gap:8px; direction:ltr; }
+  .tel a { flex:1; text-align:center; text-decoration:none; border:1px solid var(--line); border-radius:10px; padding:10px 4px; font-weight:700; }
+  .tel small { display:block; font-weight:400; color:var(--mute); }
+  #overlay { position:fixed; inset:0; background:var(--lvl); color:var(--lvl-ink); display:none; flex-direction:column; justify-content:center; padding:24px; text-align:center; z-index:9; }
+  #overlay .big { font-size:2.4rem; font-weight:800; }
+  #overlay button { margin:24px auto 0; font:inherit; font-weight:700; padding:12px 28px; border-radius:999px; border:2px solid currentColor; background:transparent; color:inherit; }
+</style>
+</head>
+<body>
+<div id="overlay" role="alertdialog" aria-live="assertive">
+  <div class="big">⚠️ انتبه !</div>
+  <div class="big" style="font-size:1.5rem">Attention</div>
+  <p id="ov-ar"></p>
+  <p id="ov-fr" class="fr" style="text-align:center"></p>
+  <button id="ov-ok">فهمت · J'ai compris</button>
+</div>
+
+<main>
+  <h1>يقظة واد الشعبة · آسفي <span class="mute">Veille oued Chaâba · Safi</span></h1>
+  <div class="stale" id="stale">البيانات قديمة، لا تعتمد عليها. · Données périmées, ne pas s'y fier.</div>
+
+  <div class="banner" aria-live="polite">
+    <div class="lvl" id="lvl">…</div>
+    <p id="msg-ar"></p>
+    <p id="msg-fr" class="fr"></p>
+  </div>
+
+  <div class="card">
+    <h2>أقصى الأمطار المتوقعة (ملم) · Pluie max prévue (mm), 48 h</h2>
+    <div class="grid">
+      <div><b id="r1">–</b><span>1 h</span></div>
+      <div><b id="r3">–</b><span>3 h</span></div>
+      <div><b id="r6">–</b><span>6 h</span></div>
+      <div><b id="r24">–</b><span>24 h</span></div>
+    </div>
+    <p class="mute fr" id="detail"></p>
+    <p class="mute fr">Repère : crue du 14/12/2025 ≈ 19 mm en 1 h, 35 mm en 6 h.</p>
+  </div>
+
+  <div class="card" id="official-card" style="display:none">
+    <h2>النشرة الرسمية · Bulletin officiel (DGM)</h2>
+    <div id="official"></div>
+  </div>
+
+  <div class="card">
+    <h2>صور الأقمار الاصطناعية مباشرة · Satellite en direct</h2>
+    <ul class="fr">
+      <li><a href="https://zoom.earth/maps/satellite/#view=32.3,-9.24,8z">Zoom Earth — nuages et pluie (Meteosat)</a></li>
+      <li><a href="https://www.windy.com/-Rain-thunder-rain?rain,32.300,-9.240,9">Windy — pluie et orages</a></li>
+      <li><a href="https://view.eumetsat.int/">EUMETSAT View — imagerie Meteosat</a></li>
+      <li><a href="https://vigilance.marocmeteo.ma/">Carte de vigilance officielle (DGM)</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>الطوارئ · Urgences</h2>
+    <div class="tel">
+      <a href="tel:15">15<small>Protection civile</small></a>
+      <a href="tel:19">19<small>Police</small></a>
+      <a href="tel:177">177<small>Gendarmerie</small></a>
+    </div>
+  </div>
+
+  <p class="mute">تقدير آلي غير رسمي مبني على نماذج الطقس. اتبع دائماً تعليمات السلطات والمديرية العامة للأرصاد الجوية.</p>
+  <p class="mute fr">Estimation automatique non officielle, fondée sur des modèles météo (Open-Meteo). Suivez toujours les autorités et la DGM. <span id="upd"></span></p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+fetch('status.json?t=' + Date.now()).then(r => r.json()).then(s => {
+  if (s.level < 0 || s.level === undefined) {
+    $('lvl').textContent = 'في انتظار أول تحديث · En attente de la première mise à jour';
+    return;
+  }
+  document.body.className = 'l' + s.level;
+  $('lvl').textContent = s.level_ar + ' · ' + s.level_fr;
+  $('msg-ar').textContent = s.message_ar;
+  $('msg-fr').textContent = s.message_fr;
+  const m = s.rain.sums;
+  $('r1').textContent = m['1h'].mm; $('r3').textContent = m['3h'].mm;
+  $('r6').textContent = m['6h'].mm; $('r24').textContent = m['24h'].mm;
+  const t = x => (x || '').replace('T', ' ');
+  let d = 'Pic horaire vers ' + t(m['1h'].start) + ' · scénario le plus pessimiste : ' + s.rain.worst_model +
+          ' (' + s.rain.worst_point + ') · accord des modèles ' + s.rain.models_agree + '/' + s.rain.models_total;
+  if (s.wind && s.wind.kmh) d += ' · rafale max ' + s.wind.kmh + ' km/h vers ' + t(s.wind.when);
+  $('detail').textContent = d;
+  $('upd').textContent = 'Mise à jour : ' + t(s.updated_local) + ' (heure locale).';
+
+  if (s.official && s.official.length) {
+    $('official-card').style.display = '';
+    s.official.forEach(o => {
+      const a = document.createElement('p'); a.textContent = o.ar;
+      const f = document.createElement('p'); f.className = 'fr';
+      f.textContent = o.fr + ' Du ' + t(o.start) + ' au ' + t(o.end) + '. ' + o.source;
+      $('official').append(a, f);
+    });
+  }
+
+  const ageH = (Date.now() - Date.parse(s.updated_utc)) / 36e5;
+  if (ageH > 3) $('stale').style.display = 'block';
+
+  if (s.level >= 2 && ageH <= 3) {
+    $('ov-ar').textContent = s.message_ar;
+    $('ov-fr').textContent = s.message_fr;
+    $('overlay').style.display = 'flex';
+    $('ov-ok').onclick = () => $('overlay').style.display = 'none';
+  }
+}).catch(() => {
+  $('lvl').textContent = 'تعذر تحميل البيانات · Données indisponibles';
+  $('stale').style.display = 'block';
+});
+</script>
+</body>
+</html>

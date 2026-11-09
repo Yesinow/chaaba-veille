@@ -1,0 +1,27 @@
+{
+  "_note": "Points APPROXIMATIFS du bassin de l'oued Chaaba (a affiner avec une carte du bassin versant). Seuils en mm, calibres sur la crue du 14/12/2025 : ce ne sont PAS des seuils officiels.",
+  "points": [
+    {"name": "Bab Chaaba (aval)", "lat": 32.300, "lon": -9.236},
+    {"name": "Safi centre", "lat": 32.292, "lon": -9.236},
+    {"name": "Amont nord", "lat": 32.345, "lon": -9.200},
+    {"name": "Amont nord-est", "lat": 32.350, "lon": -9.140},
+    {"name": "Amont est", "lat": 32.300, "lon": -9.150}
+  ],
+  "models": ["ecmwf_ifs025", "gfs_seamless", "icon_seamless", "meteofrance_seamless"],
+  "rain_thresholds_mm": {
+    "1": {"1h": 5,  "3h": 8,  "6h": 10, "24h": 20},
+    "2": {"1h": 10, "3h": 15, "6h": 20, "24h": 30},
+    "3": {"1h": 19, "3h": 30, "6h": 35, "24h": 46}
+  },
+  "gust_thresholds_kmh": {"1": 50, "2": 70, "3": 90},
+  "official": [
+    {
+      "source": "DGM, bulletin d'alerte n° 2026/234 du 09/11/2026",
+      "level": 2,
+      "start": "2026-11-11T12:00",
+      "end": "2026-11-11T23:00",
+      "fr": "Vigilance orange : fortes rafales de vent (70 à 80 km/h) avec chasse-poussières, province de Safi.",
+      "ar": "يقظة برتقالية: هبات رياح قوية (من 70 إلى 80 كلم/س) مصحوبة بتطاير الغبار، إقليم آسفي."
+    }
+  ]
+}
