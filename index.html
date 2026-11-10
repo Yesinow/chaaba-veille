@@ -37,7 +37,7 @@
   /* Carte */
   .mapwrap { position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#0b0f14; }
   #map { height:62vh; min-height:360px; direction:ltr; }
-  .chips { position:absolute; top:10px; left:10px; right:10px; z-index:500; display:flex; flex-wrap:wrap; gap:6px; direction:rtl; pointer-events:none; }
+  .chips { position:absolute; top:10px; left:56px; right:10px; z-index:500; display:flex; flex-wrap:wrap; gap:6px; direction:rtl; pointer-events:none; }
   .chip { pointer-events:auto; border:1px solid rgba(255,255,255,.25); background:rgba(13,17,23,.78); color:#fff; border-radius:999px; padding:6px 11px; font:inherit; font-size:.82rem; font-weight:600; cursor:pointer; backdrop-filter:blur(6px); }
   .chip[aria-pressed="true"] { background:#fff; color:#111; border-color:#fff; }
   .player { position:absolute; left:10px; right:10px; bottom:10px; z-index:500; display:flex; align-items:center; gap:10px; direction:ltr; background:rgba(13,17,23,.82); border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:8px 12px; backdrop-filter:blur(6px); }
@@ -190,7 +190,7 @@ let CFG = null, OUED = [], dismissed = -1;
 
 /* ---------- Carte ---------- */
 const map = L.map('map', {zoomControl:false, attributionControl:true}).setView([32.315, -9.205], 13);
-L.control.zoom({position:'topright'}).addTo(map);
+L.control.zoom({position:'topleft'}).addTo(map);
 map.attributionControl.setPrefix(false);
 const bases = {
   sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, attribution:'Imagerie © Esri'}),
