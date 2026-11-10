@@ -1,0 +1,29 @@
+name: Capture page
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Captures
+        run: |
+          URL="https://yesinow.github.io/chaaba-veille/?v=$(date +%s)"
+          mkdir -p captures
+          google-chrome --headless=new --no-sandbox --hide-scrollbars --window-size=412,2200 --force-device-scale-factor=1 \
+            --virtual-time-budget=25000 --enable-logging=stderr --v=0 --screenshot=captures/mobile.png "$URL" 2> captures/console.txt || true
+          google-chrome --headless=new --no-sandbox --hide-scrollbars --window-size=1280,1500 \
+            --virtual-time-budget=25000 --screenshot=captures/ordi.png "$URL" || true
+          grep -iE "console|error|uncaught" captures/console.txt | grep -v "dbus\|gpu\|Fontconfig" | tail -40 > captures/erreurs.txt || true
+      - name: Enregistrer
+        run: |
+          git config user.name "chaaba-veille-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add captures
+          git commit -m "capture de la page" || true
+          for i in 1 2 3; do git pull --rebase -q -X theirs && git push && break; sleep 5; done

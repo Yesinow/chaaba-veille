@@ -2,262 +2,456 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#11161c">
 <title>يقظة واد الشعبة - آسفي</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-  :root { --bg:#f4f1ea; --ink:#1c2430; --mute:#5d6875; --card:#fff; --line:#ddd6c8; --lvl:#7a8794; --lvl-ink:#fff; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#12171d; --ink:#edf0f3; --mute:#9aa6b2; --card:#1b222b; --line:#2c3642; }
+  :root {
+    --bg:#0d1117; --panel:#161c24; --panel2:#1d2530; --ink:#eef2f6; --mute:#94a1b0; --line:#2a3441;
+    --lvl:#5b6b7c; --lvl-ink:#fff; --oued:#38bdf8;
   }
-  body.l0 { --lvl:#2e8b57; } body.l1 { --lvl:#e8b500; --lvl-ink:#1c2430; }
-  body.l2 { --lvl:#e8730c; } body.l3 { --lvl:#c81e1e; }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui, "Segoe UI", Tahoma, sans-serif; }
-  main { max-width:640px; margin:0 auto; padding:16px; }
-  h1 { font-size:1.15rem; margin:4px 0 12px; }
-  .banner { background:var(--lvl); color:var(--lvl-ink); border-radius:14px; padding:18px; }
-  .banner .lvl { font-size:1.9rem; font-weight:800; line-height:1.2; }
-  .banner p { margin:8px 0 0; }
+  body.l0 { --lvl:#1f8f55; } body.l1 { --lvl:#e5b300; --lvl-ink:#111; }
+  body.l2 { --lvl:#ea6c0a; } body.l3 { --lvl:#d11f1f; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); }
+  body { font:16px/1.55 system-ui, "Segoe UI", Tahoma, sans-serif; -webkit-tap-highlight-color:transparent; }
   .fr { direction:ltr; text-align:left; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-top:12px; }
-  .card h2 { font-size:1rem; margin:0 0 8px; }
-  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; text-align:center; direction:ltr; }
-  .grid b { display:block; font-size:1.3rem; font-variant-numeric:tabular-nums; }
-  .grid span, .mute { color:var(--mute); font-size:.85rem; }
-  .stale { background:#c81e1e; color:#fff; border-radius:10px; padding:10px 14px; margin-bottom:12px; display:none; }
-  .rule { border-inline-start:4px solid #c81e1e; }
-  .sat { position:relative; margin-top:10px; background:#0b0f14; border-radius:10px; overflow:hidden; aspect-ratio:4/3; }
-  .sat img { width:100%; height:100%; display:block; object-fit:cover; }
-  .sat i { position:absolute; left:49.1%; top:50%; width:10px; height:10px; margin:-5px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
   a { color:inherit; }
-  ul { margin:0; padding-inline-start:20px; }
+
+  /* Bandeau d'alerte */
+  #bar { position:sticky; top:0; z-index:1000; background:var(--lvl); color:var(--lvl-ink); padding:12px 16px calc(12px); box-shadow:0 2px 12px rgba(0,0,0,.4); }
+  body.l2 #bar, body.l3 #bar { animation:pulse 1.6s ease-in-out infinite; }
+  body.l3 #bar { animation-duration:.9s; }
+  @keyframes pulse { 50% { filter:brightness(1.25); } }
+  #bar .row { display:flex; align-items:center; gap:12px; max-width:960px; margin:0 auto; }
+  #bar .ico { font-size:2.2rem; line-height:1; }
+  #bar .head { font-size:1.35rem; font-weight:800; line-height:1.25; }
+  #bar .head small { display:block; font-size:.85rem; font-weight:600; opacity:.9; }
+  #bar .msg { max-width:960px; margin:6px auto 0; font-size:.95rem; }
+  #bar .msg p { margin:2px 0; }
+  #stale { display:none; background:#7f1d1d; color:#fff; text-align:center; padding:6px 12px; font-size:.9rem; }
+
+  main { max-width:960px; margin:0 auto; padding:12px 16px 32px; }
+
+  /* Carte */
+  .mapwrap { position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#0b0f14; }
+  #map { height:62vh; min-height:360px; direction:ltr; }
+  .chips { position:absolute; top:10px; left:10px; right:10px; z-index:500; display:flex; flex-wrap:wrap; gap:6px; direction:rtl; pointer-events:none; }
+  .chip { pointer-events:auto; border:1px solid rgba(255,255,255,.25); background:rgba(13,17,23,.78); color:#fff; border-radius:999px; padding:6px 11px; font:inherit; font-size:.82rem; font-weight:600; cursor:pointer; backdrop-filter:blur(6px); }
+  .chip[aria-pressed="true"] { background:#fff; color:#111; border-color:#fff; }
+  .player { position:absolute; left:10px; right:10px; bottom:10px; z-index:500; display:flex; align-items:center; gap:10px; direction:ltr; background:rgba(13,17,23,.82); border:1px solid rgba(255,255,255,.18); border-radius:14px; padding:8px 12px; backdrop-filter:blur(6px); }
+  .player button { flex:none; width:38px; height:38px; border-radius:50%; border:0; background:#fff; color:#111; font-size:1rem; cursor:pointer; }
+  .player input { flex:1; accent-color:#38bdf8; }
+  .player .when { flex:none; font-variant-numeric:tabular-nums; font-size:.85rem; min-width:92px; text-align:right; }
+  .legend { position:absolute; bottom:66px; left:10px; z-index:500; direction:ltr; background:rgba(13,17,23,.82); border-radius:10px; padding:6px 8px; font-size:.72rem; color:#dfe6ee; }
+  .legend .scale { display:flex; height:8px; width:150px; border-radius:4px; overflow:hidden; margin:3px 0 2px; }
+  .legend .scale i { flex:1; }
+  .legend .ticks { display:flex; justify-content:space-between; }
+  .locate { position:absolute; bottom:66px; right:10px; z-index:500; border:0; border-radius:999px; padding:10px 14px; background:var(--oued); color:#04131d; font:inherit; font-weight:800; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,.4); }
+  #where { display:none; margin-top:10px; border-radius:12px; padding:12px 14px; font-weight:600; }
+  #where.near { display:block; background:#7f1d1d; color:#fff; }
+  #where.mid { display:block; background:#7c3a06; color:#fff; }
+  #where.far { display:block; background:#123524; color:#d1fae5; }
+  .leaflet-popup-content { font:14px/1.5 system-ui, Tahoma, sans-serif; direction:rtl; text-align:right; }
+
+  /* Cartes d'info */
+  .grid2 { display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px; }
+  @media (min-width:760px) { .grid2 { grid-template-columns:1fr 1fr; } }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; }
+  .card h2 { font-size:1rem; margin:0 0 10px; }
+  .card h2 small { color:var(--mute); font-weight:500; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center; }
+  .stat { background:var(--panel2); border-radius:12px; padding:10px 4px; }
+  .stat b { display:block; font-size:1.55rem; font-variant-numeric:tabular-nums; line-height:1.2; }
+  .stat span { color:var(--mute); font-size:.78rem; }
+  .stat.hot { background:#7f1d1d; } .stat.warm { background:#7c3a06; }
+  .mute { color:var(--mute); font-size:.85rem; }
+  #chart { width:100%; height:150px; display:block; direction:ltr; }
+  .tip { min-height:1.4em; font-size:.85rem; direction:ltr; text-align:left; color:var(--mute); }
   .tel { display:flex; gap:8px; direction:ltr; }
-  .tel a { flex:1; text-align:center; text-decoration:none; border:1px solid var(--line); border-radius:10px; padding:10px 4px; font-weight:700; }
-  .tel small { display:block; font-weight:400; color:var(--mute); }
-  #overlay { position:fixed; inset:0; background:var(--lvl); color:var(--lvl-ink); display:none; flex-direction:column; justify-content:center; padding:24px; text-align:center; z-index:9; }
-  #overlay .big { font-size:2.4rem; font-weight:800; }
-  #overlay button { margin:24px auto 0; font:inherit; font-weight:700; padding:12px 28px; border-radius:999px; border:2px solid currentColor; background:transparent; color:inherit; }
+  .tel a { flex:1; text-align:center; text-decoration:none; background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px 4px; font-weight:800; font-size:1.3rem; }
+  .tel small { display:block; font-weight:500; font-size:.75rem; color:var(--mute); }
+  .rule { border-color:#d11f1f; background:#2a1215; }
+  .rule p { margin:0 0 4px; }
+  ul.links { margin:0; padding-inline-start:18px; }
+
+  #overlay { position:fixed; inset:0; z-index:2000; background:var(--lvl); color:var(--lvl-ink); display:none; flex-direction:column; justify-content:center; align-items:center; padding:28px; text-align:center; }
+  #overlay .big { font-size:3rem; font-weight:900; line-height:1.1; }
+  #overlay p { max-width:560px; font-size:1.1rem; }
+  #overlay button { margin-top:20px; font:inherit; font-weight:800; padding:14px 30px; border-radius:999px; border:2px solid currentColor; background:transparent; color:inherit; cursor:pointer; }
 </style>
 </head>
 <body>
 <div id="overlay" role="alertdialog" aria-live="assertive">
   <div class="big">⚠️ انتبه !</div>
-  <div class="big" style="font-size:1.5rem">Attention</div>
+  <div class="big" style="font-size:1.6rem">Attention</div>
   <p id="ov-ar"></p>
-  <p id="ov-fr" class="fr" style="text-align:center"></p>
+  <p id="ov-fr" dir="ltr"></p>
   <button id="ov-ok">فهمت · J'ai compris</button>
 </div>
 
+<header id="bar" aria-live="polite">
+  <div class="row">
+    <div class="ico" id="ico">⏳</div>
+    <div class="head" id="head">جارٍ التحميل…<small>Chargement…</small></div>
+  </div>
+  <div class="msg"><p id="msg-ar"></p><p id="msg-fr" class="fr"></p></div>
+</header>
+<div id="stale">البيانات قديمة، لا تعتمد عليها · Données périmées</div>
+
 <main>
-  <h1>يقظة واد الشعبة · آسفي <span class="mute">Veille oued Chaâba · Safi</span></h1>
-  <div class="stale" id="stale">البيانات قديمة، لا تعتمد عليها. · Données périmées, ne pas s'y fier.</div>
-
-  <div class="banner" aria-live="polite">
-    <div class="lvl" id="lvl">…</div>
-    <p id="msg-ar"></p>
-    <p id="msg-fr" class="fr"></p>
-  </div>
-
-  <div class="card rule">
-    <p style="margin:0">إذا كان المطر غزيراً الآن أو بدأ الماء يرتفع في الواد: ابتعد فوراً واصعد إلى مكان مرتفع. لا تنتظر هذه الصفحة.</p>
-    <p class="fr" style="margin:6px 0 0">S'il pleut très fort maintenant ou si l'eau monte dans l'oued : éloignez-vous tout de suite et montez en hauteur. N'attendez pas cette page.</p>
-  </div>
-
-  <div class="card">
-    <h2>ما يراه القمر الاصطناعي الآن · Ce que le satellite voit maintenant</h2>
-    <p class="fr" id="obs" style="margin:0">…</p>
-    <div class="sat">
-      <img id="sat" alt="Image satellite Meteosat autour de Safi : nuages, pluie estimée et éclairs">
-      <i></i>
+  <div class="mapwrap">
+    <div id="map" role="application" aria-label="Carte de l'oued Chaâba"></div>
+    <div class="chips">
+      <button class="chip" data-base="sat" aria-pressed="true">صورة جوية</button>
+      <button class="chip" data-base="plan" aria-pressed="false">خريطة</button>
+      <button class="chip" data-ov="ir" aria-pressed="true">☁️ السحب</button>
+      <button class="chip" data-ov="rain" aria-pressed="true">🌧️ المطر</button>
+      <button class="chip" data-ov="li" aria-pressed="true">⚡ البرق</button>
     </div>
-    <p class="mute fr">Meteosat (EUMETSAT) : nuages, pluie estimée, éclairs. Le point rouge est Safi. Image renouvelée toutes les 5 à 10 min, avec 15 à 50 min de retard.</p>
-  </div>
-
-  <div class="card">
-    <h2>أقصى الأمطار المتوقعة (ملم) · Pluie max prévue (mm), 48 h</h2>
-    <div class="grid">
-      <div><b id="r1">–</b><span>1 h</span></div>
-      <div><b id="r3">–</b><span>3 h</span></div>
-      <div><b id="r6">–</b><span>6 h</span></div>
-      <div><b id="r24">–</b><span>24 h</span></div>
+    <div class="legend">
+      Pluie satellite (mm/h)
+      <div class="scale"><i style="background:#c8f5c8"></i><i style="background:#58c858"></i><i style="background:#3c9cd2"></i><i style="background:#2b5cff"></i><i style="background:#6a00c8"></i><i style="background:#c800a8"></i></div>
+      <div class="ticks"><span>0</span><span>10</span><span>20</span><span>30</span><span>50+</span></div>
     </div>
-    <p class="mute fr" id="detail"></p>
-    <p class="mute fr">Repère : crue du 14/12/2025 ≈ 19 mm en 1 h, 35 mm en 6 h.</p>
+    <button class="locate" id="locate">📍 أين أنا؟</button>
+    <div class="player">
+      <button id="play" aria-label="Lecture">▶</button>
+      <input id="slider" type="range" min="0" max="8" value="8" aria-label="Heure de l'image satellite">
+      <div class="when" id="when">—</div>
+    </div>
+  </div>
+  <div id="where"></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>🛰️ فوق حوض الواد الآن <small>· satellite Meteosat</small></h2>
+      <div class="stats">
+        <div class="stat" id="s-rate"><b>–</b><span>ملم/ساعة الآن<br>mm/h</span></div>
+        <div class="stat" id="s-acc"><b>–</b><span>المجموع خلال ساعة<br>mm / 1 h</span></div>
+        <div class="stat" id="s-li"><b>–</b><span>برق فوق الحوض<br>éclairs</span></div>
+      </div>
+      <p class="mute fr" id="obs-note" style="margin:8px 0 0"></p>
+    </div>
+
+    <div class="card">
+      <h2>📈 الأمطار المتوقعة 48 ساعة <small>· pire modèle, mm/h</small></h2>
+      <svg id="chart" viewBox="0 0 600 150" preserveAspectRatio="none" role="img" aria-label="Pluie prévue heure par heure"></svg>
+      <div class="tip" id="tip">Touchez une barre pour voir l'heure et la valeur.</div>
+      <p class="mute fr" id="fc-note" style="margin:6px 0 0"></p>
+    </div>
   </div>
 
-  <div class="card" id="official-card" style="display:none">
-    <h2>النشرة الرسمية · Bulletin officiel (DGM)</h2>
-    <div id="official"></div>
+  <div class="card rule" style="margin-top:12px">
+    <p><b>إذا كان المطر غزيراً الآن أو بدأ الماء يرتفع: ابتعد فوراً عن الواد واصعد إلى مكان مرتفع. لا تنتظر هذه الصفحة.</b></p>
+    <p class="fr">S'il pleut très fort ou si l'eau monte : éloignez-vous tout de suite de l'oued et montez en hauteur. N'attendez pas cette page.</p>
   </div>
 
-  <div class="card">
-    <h2>صور الأقمار الاصطناعية مباشرة · Satellite en direct</h2>
-    <ul class="fr">
-      <li><a href="https://zoom.earth/maps/satellite/#view=32.3,-9.24,8z">Zoom Earth — nuages et pluie (Meteosat)</a></li>
-      <li><a href="https://www.windy.com/-Rain-thunder-rain?rain,32.300,-9.240,9">Windy — pluie et orages</a></li>
-      <li><a href="https://view.eumetsat.int/">EUMETSAT View — imagerie Meteosat</a></li>
-      <li><a href="https://vigilance.marocmeteo.ma/">Carte de vigilance officielle (DGM)</a></li>
+  <div class="grid2">
+    <div class="card" id="official-card" style="display:none">
+      <h2>📄 النشرة الرسمية <small>· DGM</small></h2>
+      <div id="official"></div>
+    </div>
+    <div class="card">
+      <h2>☎️ الطوارئ <small>· Urgences</small></h2>
+      <div class="tel">
+        <a href="tel:15">15<small>الوقاية المدنية</small></a>
+        <a href="tel:19">19<small>الشرطة</small></a>
+        <a href="tel:177">177<small>الدرك</small></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <h2>🔗 صور مباشرة أخرى <small>· autres images en direct</small></h2>
+    <ul class="links fr">
+      <li><a href="https://zoom.earth/maps/satellite/#view=32.3,-9.24,9z" target="_blank" rel="noopener">Zoom Earth — satellite</a></li>
+      <li><a href="https://www.windy.com/-Rain-thunder-rain?rain,32.300,-9.240,9" target="_blank" rel="noopener">Windy — pluie et orages</a></li>
+      <li><a href="https://vigilance.marocmeteo.ma/" target="_blank" rel="noopener">Vigilance officielle (DGM)</a></li>
     </ul>
   </div>
 
-  <div class="card">
-    <h2>الطوارئ · Urgences</h2>
-    <div class="tel">
-      <a href="tel:15">15<small>Protection civile</small></a>
-      <a href="tel:19">19<small>Police</small></a>
-      <a href="tel:177">177<small>Gendarmerie</small></a>
-    </div>
-  </div>
-
-  <p class="mute">تقدير آلي غير رسمي مبني على نماذج الطقس. اتبع دائماً تعليمات السلطات والمديرية العامة للأرصاد الجوية.</p>
-  <p class="mute fr">Estimation automatique non officielle, fondée sur des modèles météo (Open-Meteo). Suivez toujours les autorités et la DGM. <span id="upd"></span></p>
+  <p class="mute">تقدير آلي غير رسمي. اتبع دائماً تعليمات السلطات والمديرية العامة للأرصاد الجوية.</p>
+  <p class="mute fr">Estimation automatique non officielle : prévisions Open-Meteo, observation EUMETSAT (Meteosat), tracé de l'oued © OpenStreetMap (nommé « Oued Abdallah ben Moussa » dans OSM). <span id="upd"></span></p>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const WIN = {'1h':1, '3h':3, '6h':6, '24h':24};
 const NAMES_FR = ['Vert','Jaune','Orange','Rouge'], NAMES_AR = ['أخضر','أصفر','برتقالي','أحمر'];
+const HEAD_AR = ['لا خطر حالياً','يقظة','انتبه — خطر فيضان','خطر — ابتعد عن الواد الآن'];
+const HEAD_FR = ['Pas de danger actuellement','Vigilance','Attention — risque de crue','Danger — quittez les abords de l\'oued'];
+const ICONS = ['✅','⚠️','🚨','🆘'];
+const pad = n => String(n).padStart(2, '0');
 const t = x => (x || '').replace('T', ' ');
-let dismissed = -1;
+let CFG = null, OUED = [], dismissed = -1;
 
-// Calcul en direct dans le navigateur, a chaque ouverture (meme logique que monitor.py).
+/* ---------- Carte ---------- */
+const map = L.map('map', {zoomControl:false, attributionControl:true}).setView([32.315, -9.205], 13);
+L.control.zoom({position:'topright'}).addTo(map);
+map.attributionControl.setPrefix(false);
+const bases = {
+  sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, attribution:'Imagerie © Esri'}),
+  plan: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'})
+};
+bases.sat.addTo(map);
+const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, opacity:.9}).addTo(map);
+
+// Couches satellite en direct (EUMETSAT / Meteosat), animees sur les 2 dernieres heures
+const WMS = 'https://view.eumetsat.int/geoserver/wms';
+const FRAMES = 9, STEP = 10;  // 9 images toutes les 10 min (1 h 30)
+function frameTimes() {
+  const now = new Date(Date.now() - 15 * 60e3);
+  now.setUTCMinutes(Math.floor(now.getUTCMinutes() / STEP) * STEP, 0, 0);
+  return Array.from({length: FRAMES}, (_, k) => new Date(now.getTime() - (FRAMES - 1 - k) * STEP * 60e3));
+}
+const ATTR = 'Satellite © EUMETSAT';
+const mk = (layers, time, opacity, z) => L.tileLayer.wms(WMS, {layers, styles:'', format:'image/png', transparent:true, version:'1.3.0',
+  time: time.toISOString().replace(/\.\d+Z$/, '.000Z'), opacity, zIndex:z, attribution:ATTR, maxNativeZoom:11});
+let times = frameTimes(), frame = FRAMES - 1;
+const ov = {ir:[], rain:[], li:[]};
+const ovOn = {ir:true, rain:true, li:true};
+function buildFrames() {
+  Object.values(ov).flat().forEach(l => map.removeLayer(l));
+  times = frameTimes();
+  ov.ir = times.map(tm => mk('mtg_fd:ir105_hrfi', tm, 0, 5));
+  ov.rain = times.map(tm => mk('mtg_fd:h40b', tm, 0, 6));
+  ov.li = times.map(tm => mk('mtg_fd:li_afa', tm, 0, 7));
+  for (const k in ov) if (ovOn[k]) ov[k].forEach(l => l.addTo(map));
+  show(FRAMES - 1);
+}
+function show(i) {
+  frame = i;
+  for (const k in ov) ov[k].forEach((l, j) => l.setOpacity(j === i && ovOn[k] ? (k === 'ir' ? .45 : .85) : 0));
+  $('slider').value = i;
+  const d = times[i], loc = new Date(d.getTime());
+  const ago = Math.round((Date.now() - d.getTime()) / 60e3);
+  $('when').textContent = pad(loc.getHours()) + ':' + pad(loc.getMinutes()) + ' · −' + ago + ' min';
+}
+let timer = null;
+$('play').onclick = () => {
+  if (timer) { clearInterval(timer); timer = null; $('play').textContent = '▶'; return; }
+  $('play').textContent = '❚❚';
+  timer = setInterval(() => show((frame + 1) % FRAMES), 900);
+};
+$('slider').oninput = e => { if (timer) $('play').click(); show(+e.target.value); };
+document.querySelectorAll('[data-base]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[data-base]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  for (const k in bases) map.removeLayer(bases[k]);
+  bases[b.dataset.base].addTo(map).bringToBack();
+});
+document.querySelectorAll('[data-ov]').forEach(b => b.onclick = () => {
+  const k = b.dataset.ov; ovOn[k] = !ovOn[k]; b.setAttribute('aria-pressed', ovOn[k]);
+  ov[k].forEach(l => ovOn[k] ? l.addTo(map) : map.removeLayer(l));
+  show(frame);
+});
+buildFrames();
+
+// Trace de l'oued et lieux
+fetch('oued.geojson').then(r => r.json()).then(gj => {
+  L.geoJSON(gj, {
+    style: f => f.properties.kind === 'oued' ? {color:'#38bdf8', weight:5, opacity:.95}
+      : f.properties.kind === 'vallee' ? {color:'#f97316', weight:2, fillColor:'#f97316', fillOpacity:.25, dashArray:'4 4'}
+      : {color:'#38bdf8', weight:1, fillColor:'#38bdf8', fillOpacity:.35},
+    pointToLayer: (f, ll) => L.circleMarker(ll, {radius:7, color:'#fff', weight:2, fillColor:'#38bdf8', fillOpacity:1}),
+    onEachFeature: (f, l) => {
+      const p = f.properties;
+      if (p.kind === 'oued') {
+        OUED.push(f.geometry.coordinates);
+        l.bindPopup('<b>واد الشعبة</b><br>مجرى الواد: خطر ارتفاع سريع للماء أثناء العواصف.<br><span dir="ltr">Oued Chaâba : montée très rapide de l\'eau pendant les orages.</span>');
+      } else if (p.kind === 'vallee') l.bindPopup('<b>الشعبة</b><br>منطقة غمرتها مياه فيضان 14 دجنبر 2025.<br><span dir="ltr">Vallée de la Chaâba, inondée le 14/12/2025.</span>');
+      else if (p.kind === 'lac') l.bindPopup('<b>' + p.name + '</b>');
+      else l.bindPopup('<b>' + p.ar + '</b><br><span dir="ltr">' + p.fr + '</span>');
+    }
+  }).addTo(map);
+  L.marker([32.3003, -9.2385], {icon: L.divIcon({className:'', html:'<div style="background:#d11f1f;color:#fff;font:700 12px system-ui;padding:3px 7px;border-radius:8px;white-space:nowrap;box-shadow:0 1px 6px #0008">باب الشعبة</div>', iconAnchor:[34, 12]})})
+    .bindPopup('<b>باب الشعبة</b><br>الحي الأكثر تضرراً سنة 2025.<br><span dir="ltr">Quartier le plus touché en 2025.</span>').addTo(map);
+}).catch(() => {});
+
+// Distance de l'utilisateur a l'oued
+function distToOued(lat, lon) {
+  const kx = 111320 * Math.cos(lat * Math.PI / 180), ky = 110540;
+  let best = Infinity;
+  for (const line of OUED) for (let i = 0; i < line.length - 1; i++) {
+    const ax = (line[i][0] - lon) * kx, ay = (line[i][1] - lat) * ky;
+    const bx = (line[i + 1][0] - lon) * kx, by = (line[i + 1][1] - lat) * ky;
+    const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+    const u = L2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / L2)) : 0;
+    best = Math.min(best, Math.hypot(ax + u * dx, ay + u * dy));
+  }
+  return best;
+}
+let me = null;
+$('locate').onclick = () => {
+  if (!navigator.geolocation) return;
+  $('locate').textContent = '… ';
+  navigator.geolocation.getCurrentPosition(pos => {
+    $('locate').textContent = '📍 أين أنا؟';
+    const {latitude:la, longitude:lo} = pos.coords;
+    if (me) map.removeLayer(me);
+    me = L.circleMarker([la, lo], {radius:9, color:'#fff', weight:3, fillColor:'#22c55e', fillOpacity:1}).addTo(map);
+    map.setView([la, lo], 15);
+    const d = Math.round(distToOued(la, lo)), w = $('where');
+    if (d < 300) { w.className = 'near'; w.innerHTML = '🚨 أنت على بعد ' + d + ' م فقط من مجرى الواد. عند المطر القوي ابتعد فوراً واصعد إلى مكان مرتفع.<br><span dir="ltr">Vous êtes à ' + d + ' m de l\'oued : au moindre orage, éloignez-vous.</span>'; }
+    else if (d < 1000) { w.className = 'mid'; w.innerHTML = '⚠️ أنت على بعد ' + d + ' م من مجرى الواد. تجنب الأزقة المنخفضة أثناء العواصف.<br><span dir="ltr">Vous êtes à ' + d + ' m de l\'oued : évitez les rues basses pendant les orages.</span>'; }
+    else { w.className = 'far'; w.innerHTML = '✅ أنت على بعد ' + (d / 1000).toFixed(1) + ' كلم من مجرى الواد.<br><span dir="ltr">Vous êtes à ' + (d / 1000).toFixed(1) + ' km de l\'oued.</span>'; }
+  }, () => { $('locate').textContent = '📍 أين أنا؟'; }, {enableHighAccuracy:true, timeout:15000});
+};
+
+/* ---------- Previsions en direct (Open-Meteo) ---------- */
 async function live() {
-  const cfg = await (await fetch('config.json?t=' + Date.now())).json();
   const q = new URLSearchParams({
-    latitude: cfg.points.map(p => p.lat).join(','), longitude: cfg.points.map(p => p.lon).join(','),
-    hourly: 'precipitation,wind_gusts_10m', models: cfg.models.join(','),
+    latitude: CFG.points.map(p => p.lat).join(','), longitude: CFG.points.map(p => p.lon).join(','),
+    hourly: 'precipitation,wind_gusts_10m', models: CFG.models.join(','),
     past_hours: 6, forecast_hours: 48, wind_speed_unit: 'kmh', timezone: 'Africa/Casablanca'
   });
   const r = await fetch('https://api.open-meteo.com/v1/forecast?' + q.toString().replace(/%2C/g, ','));
   if (!r.ok) throw new Error('open-meteo ' + r.status);
   let data = await r.json(); if (!Array.isArray(data)) data = [data];
-
-  let worst = null, gust = {kmh: 0, when: null}, levels = {}, offset = 0;
-  const rainLevel = sums => { for (const l of [3,2,1]) if (Object.keys(WIN).some(w => sums[w].mm >= cfg.rain_thresholds_mm[l][w])) return l; return 0; };
+  let worst = null, gust = {kmh:0, when:null}, levels = {}, offset = 0, series = null, stimes = null;
+  const rainLevel = sums => { for (const l of [3,2,1]) if (Object.keys(WIN).some(w => sums[w].mm >= CFG.rain_thresholds_mm[l][w])) return l; return 0; };
   data.forEach((loc, i) => {
-    const h = loc.hourly, times = h.time; offset = loc.utc_offset_seconds || 0;
-    const point = (cfg.points[i] || {}).name || ('point ' + i);
+    const h = loc.hourly, tms = h.time; offset = loc.utc_offset_seconds || 0;
+    if (!series) { series = new Array(tms.length).fill(0); stimes = tms; }
+    const point = (CFG.points[i] || {}).name || ('point ' + i);
     for (const key in h) {
       const isRain = key === 'precipitation' || key.startsWith('precipitation_');
       const isGust = key === 'wind_gusts_10m' || key.startsWith('wind_gusts_10m_');
-      if (!isRain && !isGust) continue;
-      if (!h[key] || h[key].every(v => v === null)) continue;
+      if ((!isRain && !isGust) || !h[key] || h[key].every(v => v === null)) continue;
       const vals = h[key].map(v => v || 0);
-      if (isGust) { const m = Math.max(...vals); if (m > gust.kmh) gust = {kmh: Math.round(m), when: times[vals.indexOf(m)]}; continue; }
+      if (isGust) { const m = Math.max(...vals); if (m > gust.kmh) gust = {kmh:Math.round(m), when:tms[vals.indexOf(m)]}; continue; }
+      vals.forEach((v, j) => { if (v > series[j]) series[j] = v; });
       const model = key.slice('precipitation'.length).replace(/^_/, '') || 'best_match';
       const sums = {};
       for (const w in WIN) {
         let best = 0, at = 0;
         for (let s = 0; s < vals.length; s++) { let tot = 0; for (let k = s; k < Math.min(s + WIN[w], vals.length); k++) tot += vals[k]; if (tot > best) { best = tot; at = s; } }
-        sums[w] = {mm: Math.round(best * 10) / 10, start: times[at]};
+        sums[w] = {mm: Math.round(best * 10) / 10, start: tms[at]};
       }
       const lvl = rainLevel(sums);
       levels[model] = Math.max(levels[model] || 0, lvl);
-      if (!worst || lvl > worst.level || (lvl === worst.level && sums['6h'].mm > worst.sums['6h'].mm)) worst = {level: lvl, model, point, sums};
+      if (!worst || lvl > worst.level || (lvl === worst.level && sums['6h'].mm > worst.sums['6h'].mm)) worst = {level:lvl, model, point, sums};
     }
   });
   if (!worst) throw new Error('pas de donnees');
   const now = new Date(), nowLocal = new Date(now.getTime() + offset * 1000).toISOString().slice(0, 16);
-  const rl = worst.level, n = Object.keys(levels).length;
-  let fr = cfg.messages_fr[rl], ar = cfg.messages_ar[rl];
-  if (gust.kmh >= cfg.gust_thresholds_kmh[1]) {
+  const rl = worst.level;
+  let fr = CFG.messages_fr[rl], ar = CFG.messages_ar[rl];
+  if (gust.kmh >= CFG.gust_thresholds_kmh[1]) {
     fr += " Vent : rafales jusqu'à " + gust.kmh + ' km/h selon le modèle le plus pessimiste.';
     ar += ' الرياح: هبات قد تصل إلى ' + gust.kmh + ' كلم/س حسب أكثر النماذج تشاؤماً.';
   }
-  return {
-    live: true, updated_utc: now.toISOString(), updated_local: nowLocal, level: rl,
-    level_fr: NAMES_FR[rl], level_ar: NAMES_AR[rl], message_fr: fr, message_ar: ar,
-    rain: {worst_model: worst.model, worst_point: worst.point, sums: worst.sums,
-           models_agree: Object.values(levels).filter(v => v >= Math.max(rl, 1)).length, models_total: n},
-    wind: gust, official: (cfg.official || []).filter(o => o.end >= nowLocal)
-  };
+  return {live:true, updated_utc:now.toISOString(), updated_local:nowLocal, level:rl, message_fr:fr, message_ar:ar,
+    rain:{worst_model:worst.model, worst_point:worst.point, sums:worst.sums,
+      models_agree:Object.values(levels).filter(v => v >= Math.max(rl, 1)).length, models_total:Object.keys(levels).length},
+    wind:gust, series, stimes, official:(CFG.official || []).filter(o => o.end >= nowLocal)};
 }
 
-function render(s) {
-  if (s.level === undefined || s.level < 0) { $('lvl').textContent = 'في انتظار أول تحديث · En attente de la première mise à jour'; return; }
-  document.body.className = 'l' + s.level;
-  $('lvl').textContent = s.level_ar + ' · ' + s.level_fr;
-  $('msg-ar').textContent = s.message_ar;
-  $('msg-fr').textContent = s.message_fr;
-  const m = s.rain.sums;
-  $('r1').textContent = m['1h'].mm; $('r3').textContent = m['3h'].mm;
-  $('r6').textContent = m['6h'].mm; $('r24').textContent = m['24h'].mm;
-  let d = 'Pic horaire vers ' + t(m['1h'].start) + ' · scénario le plus pessimiste : ' + s.rain.worst_model +
-          ' (' + s.rain.worst_point + ') · accord des modèles ' + s.rain.models_agree + '/' + s.rain.models_total;
-  if (s.wind && s.wind.kmh) d += ' · rafale max ' + s.wind.kmh + ' km/h vers ' + t(s.wind.when);
-  $('detail').textContent = d;
-  $('upd').textContent = (s.live ? 'Calculé en direct à ' : 'Dernier calcul du bot : ') + t(s.updated_local) + ' (heure locale).';
-
-  $('official').textContent = '';
-  $('official-card').style.display = (s.official && s.official.length) ? '' : 'none';
-  (s.official || []).forEach(o => {
-    const a = document.createElement('p'); a.textContent = o.ar;
-    const f = document.createElement('p'); f.className = 'fr';
-    f.textContent = o.fr + ' Du ' + t(o.start) + ' au ' + t(o.end) + '. ' + o.source;
-    $('official').append(a, f);
-  });
-
-  const ageH = (Date.now() - Date.parse(s.updated_utc)) / 36e5;
-  $('stale').style.display = ageH > 1 ? 'block' : 'none';
-  if (s.level >= 2 && ageH <= 1 && s.level > dismissed) {
-    $('ov-ar').textContent = s.message_ar;
-    $('ov-fr').textContent = s.message_fr;
-    $('overlay').style.display = 'flex';
-    $('ov-ok').onclick = () => { dismissed = s.level; $('overlay').style.display = 'none'; };
-  }
-}
-
-// Dernier calcul du bot (observation satellite incluse), lu sans cache via l'API GitHub.
+/* Dernier calcul du bot (observation satellite incluse) */
 async function botStatus() {
   const owner = location.hostname.split('.')[0], repo = location.pathname.split('/')[1];
   if (location.hostname.endsWith('.github.io') && repo) {
     try {
-      const r = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/status.json?t=' + Date.now(),
-                            {headers: {Accept: 'application/vnd.github.raw+json'}});
+      const r = await fetch('https://api.github.com/repos/' + owner + '/' + repo + '/contents/status.json?t=' + Date.now(), {headers:{Accept:'application/vnd.github.raw+json'}});
       if (r.ok) return await r.json();
     } catch (e) {}
   }
   return await (await fetch('status.json?t=' + Date.now())).json();
 }
 
-function renderObs(o, fresh) {
-  if (!o || !o.ok || !fresh) { $('obs').textContent = 'Observation satellite indisponible pour le moment. Regardez le ciel et l’image ci-dessous.'; return; }
-  $('obs').textContent =
-    'Pluie estimée sur le bassin : ' + o.rate_now_mmh + ' mm/h maintenant, ' + o.rate_max_1h_mmh + ' mm/h au plus fort, cumul ' + o.accum_1h_mm + ' mm sur 1 h' +
-    ' (image d’il y a ' + o.rain_age_min + ' min). Éclairs sur le bassin : ' + (o.lightning_basin ? 'OUI' : 'non') +
-    ' · à moins de 60 km : ' + (o.lightning_near ? 'OUI' : 'non') + ' (image d’il y a ' + o.lightning_age_min + ' min).';
+/* ---------- Graphique 48 h ---------- */
+function chart(series, stimes, nowLocal) {
+  const svg = $('chart'); svg.textContent = '';
+  if (!series) return;
+  const NS = 'http://www.w3.org/2000/svg', W = 600, H = 150, top = 8, bottom = 18;
+  const red = CFG.rain_thresholds_mm[3]['1h'], orange = CFG.rain_thresholds_mm[2]['1h'];
+  const max = Math.max(orange * 1.2, ...series);
+  const y = v => H - bottom - (v / max) * (H - top - bottom);
+  const bw = W / series.length;
+  const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; };
+  [[orange, '#ea6c0a'], [red, '#d11f1f']].forEach(([v, c]) => { if (v <= max) el('line', {x1:0, x2:W, y1:y(v), y2:y(v), stroke:c, 'stroke-dasharray':'5 4', 'stroke-width':1.5}); });
+  const nowIdx = stimes.findIndex(s => s.slice(0, 13) === (nowLocal || '').slice(0, 13));
+  series.forEach((v, i) => {
+    const c = v >= red ? '#d11f1f' : v >= orange ? '#ea6c0a' : v >= CFG.rain_thresholds_mm[1]['1h'] ? '#e5b300' : '#38bdf8';
+    const r = el('rect', {x:i * bw + 1, y:y(v), width:Math.max(1, bw - 2), height:Math.max(.5, H - bottom - y(v)), fill:c, rx:1.5, opacity: i < nowIdx ? .4 : 1});
+    const hit = el('rect', {x:i * bw, y:0, width:bw, height:H, fill:'transparent'});
+    const tell = () => { $('tip').textContent = t(stimes[i]) + ' → ' + v.toFixed(1) + ' mm/h (scénario le plus pessimiste)'; };
+    hit.addEventListener('pointerenter', tell); hit.addEventListener('click', tell);
+  });
+  if (nowIdx >= 0) el('line', {x1:nowIdx * bw, x2:nowIdx * bw, y1:0, y2:H - bottom, stroke:'#fff', 'stroke-width':1});
+  stimes.forEach((s, i) => { if (s.slice(11, 13) === '00') { const tx = el('text', {x:i * bw + 2, y:H - 4, fill:'#94a1b0', 'font-size':11}); tx.textContent = s.slice(8, 10) + '/' + s.slice(5, 7); } });
 }
 
-function satImage() {
-  const q = new URLSearchParams({service: 'WMS', version: '1.3.0', request: 'GetMap', crs: 'EPSG:4326',
-    layers: SAT_LAYERS, styles: '', bbox: '30.8,-11.2,33.8,-7.2', width: 640, height: 480, format: 'image/jpeg', t: Math.floor(Date.now() / 3e5)});
-  $('sat').src = 'https://view.eumetsat.int/geoserver/wms?' + q;
+/* ---------- Affichage ---------- */
+function render(s, o, fresh) {
+  const lv = s.level;
+  document.body.className = 'l' + lv;
+  $('ico').textContent = ICONS[lv];
+  $('head').innerHTML = HEAD_AR[lv] + '<small dir="ltr">' + HEAD_FR[lv] + ' · niveau ' + NAMES_FR[lv].toLowerCase() + '</small>';
+  $('msg-ar').textContent = s.message_ar; $('msg-fr').textContent = s.message_fr;
+
+  if (o && o.ok && fresh) {
+    $('s-rate').querySelector('b').textContent = o.rate_now_mmh;
+    $('s-acc').querySelector('b').textContent = o.accum_1h_mm;
+    $('s-li').querySelector('b').textContent = o.lightning_basin ? 'نعم' : 'لا';
+    $('s-rate').className = 'stat' + (o.rate_now_mmh >= CFG.obs_thresholds.rate_orange ? ' hot' : o.rate_now_mmh >= CFG.obs_thresholds.rate_yellow ? ' warm' : '');
+    $('s-acc').className = 'stat' + (o.accum_1h_mm >= CFG.obs_thresholds.accum_red ? ' hot' : o.accum_1h_mm >= CFG.obs_thresholds.accum_orange ? ' warm' : '');
+    $('s-li').className = 'stat' + (o.lightning_basin ? ' hot' : o.lightning_near ? ' warm' : '');
+    $('obs-note').textContent = 'Image pluie d\'il y a ' + o.rain_age_min + ' min, éclairs d\'il y a ' + o.lightning_age_min + ' min.' + (o.lightning_near && !o.lightning_basin ? ' Éclairs détectés à moins de 60 km.' : '');
+  } else {
+    ['s-rate', 's-acc', 's-li'].forEach(id => { $(id).className = 'stat'; $(id).querySelector('b').textContent = '–'; });
+    $('obs-note').textContent = 'Mesure satellite chiffrée indisponible pour le moment : regardez la carte animée ci-dessus.';
+  }
+
+  if (s.rain) {
+    const m = s.rain.sums;
+    $('fc-note').textContent = 'Max : ' + m['1h'].mm + ' mm en 1 h, ' + m['6h'].mm + ' mm en 6 h · accord des modèles ' + s.rain.models_agree + '/' + s.rain.models_total +
+      (s.wind && s.wind.kmh ? ' · rafale max ' + s.wind.kmh + ' km/h' : '') + ' · repère 2025 : 19 mm en 1 h.';
+  }
+  chart(s.series, s.stimes, s.updated_local);
+  $('upd').textContent = 'Mis à jour : ' + t(s.updated_local) + '.';
+
+  $('official').textContent = '';
+  $('official-card').style.display = (s.official && s.official.length) ? '' : 'none';
+  (s.official || []).forEach(x => {
+    const a = document.createElement('p'); a.textContent = x.ar; a.style.margin = '0 0 4px';
+    const f = document.createElement('p'); f.className = 'fr mute'; f.style.margin = '0';
+    f.textContent = x.fr + ' Du ' + t(x.start) + ' au ' + t(x.end) + '.';
+    $('official').append(a, f);
+  });
+
+  const ageH = (Date.now() - Date.parse(s.updated_utc)) / 36e5;
+  $('stale').style.display = ageH > 1 ? 'block' : 'none';
+  if (lv >= 2 && ageH <= 1 && lv > dismissed) {
+    $('ov-ar').textContent = s.message_ar; $('ov-fr').textContent = s.message_fr;
+    $('overlay').style.display = 'flex';
+    $('ov-ok').onclick = () => { dismissed = lv; $('overlay').style.display = 'none'; };
+    if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+  }
 }
-const SAT_LAYERS = 'mtg_fd:ir105_hrfi,mtg_fd:h40b,mtg_fd:li_afa,backgrounds:ne_10m_coastline,backgrounds:ne_boundary_lines_land';
 
 async function refresh() {
-  satImage();
+  if (!CFG) CFG = await (await fetch('config.json?t=' + Date.now())).json();
   let fc = null, bot = null;
   try { fc = await live(); } catch (e) {}
   try { bot = await botStatus(); } catch (e) {}
   if (bot && (bot.level === undefined || bot.level < 0)) bot = null;
   const s = fc || bot;
-  if (!s) { $('lvl').textContent = 'تعذر تحميل البيانات · Données indisponibles'; $('stale').style.display = 'block'; return; }
-  // L'observation satellite du bot passe avant la prevision si elle est recente (< 40 min).
-  const o = bot && bot.obs, fresh = bot && (Date.now() - Date.parse(bot.updated_utc)) < 40 * 60e3;
-  renderObs(o, fresh);
-  if (o && o.ok && fresh && o.level >= 1) {
+  if (!s) { $('head').innerHTML = 'تعذر تحميل البيانات<small>Données indisponibles</small>'; $('stale').style.display = 'block'; return; }
+  const o = bot && bot.obs, fresh = !!(bot && (Date.now() - Date.parse(bot.updated_utc)) < 40 * 60e3);
+  if (o && o.ok && fresh && o.level >= 1) {   // l'observation en direct passe avant la prevision
     const base = s.level;
     s.message_fr = o.level > base ? o.message_fr : o.message_fr + ' ' + s.message_fr;
     s.message_ar = o.level > base ? o.message_ar : o.message_ar + ' ' + s.message_ar;
     s.level = Math.max(base, o.level);
-    s.level_fr = NAMES_FR[s.level]; s.level_ar = NAMES_AR[s.level];
   }
-  render(s);
+  render(s, o, fresh);
 }
-refresh();
-setInterval(refresh, 3 * 60 * 1000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+refresh().catch(() => {});
+setInterval(() => { refresh().catch(() => {}); buildFrames(); }, 5 * 60e3);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh().catch(() => {}); });
 </script>
 </body>
 </html>
