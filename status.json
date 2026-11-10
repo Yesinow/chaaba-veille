@@ -1,47 +1,71 @@
 {
-  "updated_utc": "2026-11-09T20:21:55Z",
-  "updated_local": "2026-11-09T20:21",
-  "level": 0,
-  "level_fr": "Vert",
-  "level_ar": "أخضر",
-  "message_fr": "Pas de pluie dangereuse prévue sur le bassin de l'oued Chaâba dans les 48 h. Vent : rafales jusqu'à 94 km/h selon le modèle le plus pessimiste.",
-  "message_ar": "لا توجد أمطار خطيرة متوقعة على حوض واد الشعبة خلال 48 ساعة القادمة. الرياح: هبات قد تصل إلى 94 كلم/س حسب أكثر النماذج تشاؤماً.",
-  "rain": {
+  "updated_utc": "2026-11-10T01:19:33Z",
+  "updated_local": "2026-11-10T01:19",
+  "level": 1,
+  "level_fr": "Jaune",
+  "level_ar": "أصفر",
+  "message_fr": "Pluie notable prévue. Restez informé et surveillez les bulletins officiels. Vent : rafales jusqu'à 91 km/h selon le modèle le plus pessimiste.",
+  "message_ar": "أمطار مهمة متوقعة. ابقَ على اطلاع وتابع النشرات الرسمية. الرياح: هبات قد تصل إلى 91 كلم/س حسب أكثر النماذج تشاؤماً.",
+  "forecast_level": 1,
+  "obs": {
+    "ok": true,
     "level": 0,
-    "worst_model": "icon_seamless",
+    "rate_now_mmh": 0.0,
+    "rate_max_1h_mmh": 0.0,
+    "accum_1h_mm": 0.0,
+    "worst_point": "Bab Chaaba (aval)",
+    "lightning_basin": false,
+    "lightning_near": false,
+    "heavy_rain_near": false,
+    "pixels": {
+      "lightning_near": 0,
+      "lightning_basin": 0,
+      "rain_near": 0,
+      "rain_heavy_near": 0
+    },
+    "rain_image_utc": "2026-11-10T01:00Z",
+    "lightning_image_utc": "2026-11-10T01:05Z",
+    "rain_age_min": 19,
+    "lightning_age_min": 14,
+    "failed_requests": 0,
+    "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
+  },
+  "rain": {
+    "level": 1,
+    "worst_model": "gfs_seamless",
     "worst_point": "Amont nord",
     "sums": {
       "1h": {
-        "mm": 3.3,
-        "start": "2026-11-11T18:00"
+        "mm": 4.7,
+        "start": "2026-11-11T17:00"
       },
       "3h": {
-        "mm": 4.8,
+        "mm": 10.0,
         "start": "2026-11-11T17:00"
       },
       "6h": {
-        "mm": 5.9,
-        "start": "2026-11-11T14:00"
+        "mm": 16.6,
+        "start": "2026-11-11T17:00"
       },
       "24h": {
-        "mm": 8.0,
-        "start": "2026-11-10T20:00"
+        "mm": 21.0,
+        "start": "2026-11-11T01:00"
       }
     },
-    "models_agree": 0,
+    "models_agree": 2,
     "models_total": 4,
     "model_levels": {
-      "ecmwf_ifs025": 0,
-      "gfs_seamless": 0,
+      "ecmwf_ifs025": 1,
+      "gfs_seamless": 1,
       "icon_seamless": 0,
       "meteofrance_seamless": 0
     }
   },
   "wind": {
     "level": 3,
-    "kmh": 94,
-    "when": "2026-11-11T15:00",
-    "model": "gfs_seamless"
+    "kmh": 91,
+    "when": "2026-11-11T20:00",
+    "model": "icon_seamless"
   },
   "official": [
     {
