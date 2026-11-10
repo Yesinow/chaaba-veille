@@ -138,80 +138,76 @@ def main():
         obs["message_fr"], obs["message_ar"] = of, oa
     MSG_FR[rl], MSG_AR[rl] = msg_fr, msg_ar
 
-    status_path = os.path.join(ROOT, "status.json")
-    prev = -1
-    if os.path.exists(status_path):
-        try:
-            with open(status_path, encoding="utf-8") as f:
-                prev = json.load(f).get("level", -1)
-        except Exception:
-            pass
-
+    # --- Donnees publiques : mesures et previsions brutes, avec sources et heures, SANS niveau de danger ---
+    # (aucun niveau public ne peut etre deduit automatiquement sans seuils approuves ni modele valide)
+    obs_pub = {k: v for k, v in obs.items() if k not in ("level", "message_fr", "message_ar")}
     status = {
         "updated_utc": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "updated_local": now_local,
-        "level": level,
-        "level_fr": NAMES_FR[level],
-        "level_ar": NAMES_AR[level],
-        "message_fr": MSG_FR[rl],
-        "message_ar": MSG_AR[rl],
-        "forecast_level": rl,
-        "obs": obs,
-        "rain": {
-            "level": rl,
-            "worst_model": worst["model"],
-            "worst_point": worst["point"],
-            "sums": worst["sums"],
-            "models_agree": agree,
-            "models_total": n_models,
-            "model_levels": model_levels,
+        "obs": obs_pub,
+        "forecast": {
+            "fetched_local": now_local,
+            "max_1h": worst["sums"]["1h"], "max_3h": worst["sums"]["3h"],
+            "max_6h": worst["sums"]["6h"], "max_24h": worst["sums"]["24h"],
+            "model": worst["model"], "point": worst["point"], "models_total": n_models,
+            "gust_max_kmh": gust["kmh"], "gust_when": gust["when"],
+            "source": "Open-Meteo : prévision modélisée horaire, pas une mesure",
         },
-        "wind": {"level": wl, **gust},
         "official": official,
-        "source": "Open-Meteo (ECMWF, GFS, ICON, Meteo-France). Indicatif, non officiel.",
+        "station_safi": {"wigos_id": "0-20000-0-60185", "status": "non connectée (point d'accès injoignable depuis le bot)"},
+        "river_level": {"status": "aucun capteur installé"},
     }
-    with open(status_path, "w", encoding="utf-8") as f:
+    with open(os.path.join(ROOT, "status.json"), "w", encoding="utf-8") as f:
         json.dump(status, f, ensure_ascii=False, indent=2)
+
+    # --- Alerte PRIVEE pour le proprietaire seulement (jamais publiee) ---
+    state_dir = os.path.join(ROOT, ".state")
+    state_path = os.path.join(state_dir, "notify.json")
+    prev = -1
+    try:
+        with open(state_path, encoding="utf-8") as f:
+            prev = json.load(f).get("level", -1)
+    except Exception:
+        pass
+    os.makedirs(state_dir, exist_ok=True)
+    with open(state_path, "w", encoding="utf-8") as f:
+        json.dump({"level": level, "utc": status["updated_utc"]}, f)
 
     s = worst["sums"]
     lines = [
-        f"## Vigilance {NAMES_FR[level]} / {NAMES_AR[level]} — Safi, oued Chaâba",
+        f"SAFI ALERT (prototype, privé) — indicateur interne {NAMES_FR[level]}",
         "",
         MSG_AR[rl], "",
         MSG_FR[rl], "",
-        f"- Pluie max prévue : **{s['1h']['mm']} mm en 1 h** (vers {s['1h']['start']}), "
-        f"**{s['6h']['mm']} mm en 6 h** (à partir de {s['6h']['start']}), {s['24h']['mm']} mm en 24 h",
-        f"- Scénario le plus pessimiste : modèle `{worst['model']}`, point « {worst['point']} »",
-        f"- Accord des modèles : {agree}/{n_models}" + (" (confiance faible)" if agree <= 1 and n_models > 1 else ""),
-        f"- Rafale max prévue : {gust['kmh']} km/h (vers {gust['when']})",
-        ("- Satellite (image pluie d'il y a %s min) : %s mm/h max sur 1 h, cumul estimé %s mm, éclairs sur le bassin : %s"
-         % (obs.get("rain_age_min"), obs.get("rate_max_1h_mmh"), obs.get("accum_1h_mm"), "OUI" if obs.get("lightning_basin") else "non"))
-        if obs.get("ok") else "- Observation satellite indisponible pour ce calcul.",
-        "- Repère : le 14/12/2025, Safi a reçu environ 19 mm en 1 h et 35 mm en 6 h.",
+        f"- Prévision (Open-Meteo, modèle {worst['model']}, {worst['point']}) : {s['1h']['mm']} mm en 1 h vers {s['1h']['start']}, "
+        f"{s['6h']['mm']} mm en 6 h, {s['24h']['mm']} mm en 24 h ; accord des modèles {agree}/{n_models}",
+        f"- Rafale max prévue : {gust['kmh']} km/h vers {gust['when']}",
+        ("- Satellite (image pluie de %s UTC) : %s mm/h max sur 1 h, cumul estimé %s mm, éclairs sur le bassin : %s"
+         % (obs.get("rain_image_utc"), obs.get("rate_max_1h_mmh"), obs.get("accum_1h_mm"), "OUI" if obs.get("lightning_basin") else "non"))
+        if obs.get("ok") else "- Observation satellite indisponible : surveillance incomplète (pas synonyme de sécurité).",
         "",
-        "Heures locales. Estimation automatique à partir de modèles météo, **non officielle**. "
-        "Suivez la DGM (vigilance.marocmeteo.ma) et les autorités. Urgences : 15 (Protection civile), 19 (police), 177 (gendarmerie).",
+        "Indicateur non validé, réservé au propriétaire. Ne pas diffuser comme alerte officielle.",
     ]
     alert = "\n".join(lines)
-    with open(os.path.join(ROOT, "alert.md"), "w", encoding="utf-8") as f:
-        f.write(alert + "\n")
-
     notify = level >= 2 and level > prev
-    if os.environ.get("GITHUB_OUTPUT"):
-        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-            f.write(f"notify={'true' if notify else 'false'}\n")
-            f.write(f"title=Vigilance {NAMES_FR[level]} - Safi / oued Chaaba - {now_local}\n")
-
-    tok, chat = os.environ.get("TELEGRAM_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
-    if notify and tok and chat:
-        body = urllib.parse.urlencode({"chat_id": chat, "text": alert.replace("**", "").replace("## ", "")}).encode()
-        try:
-            urllib.request.urlopen(f"https://api.telegram.org/bot{tok}/sendMessage", body, timeout=30)
-        except Exception as e:  # ne jamais bloquer la veille pour une notification
-            print("Telegram :", e)
-
-    print(alert)
-    print(f"\nniveau={level} precedent={prev} notifier={notify}")
+    if notify:
+        topic = os.environ.get("NTFY_TOPIC")
+        if topic:
+            try:
+                req = urllib.request.Request("https://ntfy.sh/" + urllib.parse.quote(topic), data=alert.encode("utf-8"),
+                                             headers={"Title": "SAFI ALERT - indicateur " + NAMES_FR[level], "Priority": "5" if level == 3 else "4", "Tags": "warning"})
+                urllib.request.urlopen(req, timeout=30)
+            except Exception as e:
+                print("ntfy :", e)
+        tok, chat = os.environ.get("TELEGRAM_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
+        if tok and chat:
+            try:
+                body = urllib.parse.urlencode({"chat_id": chat, "text": alert}).encode()
+                urllib.request.urlopen(f"https://api.telegram.org/bot{tok}/sendMessage", body, timeout=30)
+            except Exception as e:  # ne jamais bloquer la veille pour une notification
+                print("Telegram :", e)
+    # le journal du bot est public : on n'y ecrit pas l'indicateur
+    print("status.json mis a jour", status["updated_utc"], "| notification privee envoyee :", notify)
 
 
 if __name__ == "__main__":

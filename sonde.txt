@@ -1,9 +1,0 @@
-station ERR CORS None
-"<urlopen error timed out>"
-collections ERR
-== /items?f=json&limit=3 ERR CORS None
-  <urlopen error timed out>
-== /items?f=json&wigos_station_identifier=0-20000-0-60185&limit=200&sortby=-resultTime ERR CORS None
-  <urlopen error timed out>
-== /items?f=json&wigos_station_identifier=0-20000-0-60185&limit=200&sortby=-reportTime ERR CORS None
-  <urlopen error timed out>

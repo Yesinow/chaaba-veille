@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#11161c">
-<title>يقظة واد الشعبة - آسفي</title>
+<title>SAFI ALERT</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root {
@@ -30,6 +30,13 @@
   #bar .head small { display:block; font-size:.85rem; font-weight:600; opacity:.9; }
   #bar .msg { max-width:960px; margin:6px auto 0; font-size:.95rem; }
   #bar .msg p { margin:2px 0; }
+  #brand { background:#0a0d12; border-bottom:1px solid var(--line); padding:10px 16px; }
+  #brand .brow { max-width:960px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  #brand b { display:block; font-size:1.25rem; letter-spacing:.04em; }
+  #brand span { color:var(--mute); font-size:.82rem; }
+  #brand em { font-style:normal; font-size:.72rem; color:#fbbf24; text-align:left; line-height:1.35; }
+  body.lx { --lvl:#3b4552; }
+  .na b { font-size:1.05rem !important; color:#fbbf24; }
   #stale { display:none; background:#7f1d1d; color:#fff; text-align:center; padding:6px 12px; font-size:.9rem; }
 
   main { max-width:960px; margin:0 auto; padding:12px 16px 32px; }
@@ -85,12 +92,19 @@
 <body>
 <div id="overlay" role="alertdialog" aria-live="assertive">
   <div class="big">⚠️ انتبه !</div>
+  <div style="font-weight:700">نشرة إنذارية رسمية · Bulletin officiel DGM</div>
   <div class="big" style="font-size:1.6rem">Attention</div>
   <p id="ov-ar"></p>
   <p id="ov-fr" dir="ltr"></p>
   <button id="ov-ok">فهمت · J'ai compris</button>
 </div>
 
+<div id="brand">
+  <div class="brow">
+    <div><b dir="ltr">SAFI ALERT</b><span>منصة متابعة مخاطر الفيضانات · واد الشعبة – آسفي</span></div>
+    <em>نموذج تجريبي — ليس خدمة حكومية<br><span dir="ltr">Prototype — pas un service de l'État</span></em>
+  </div>
+</div>
 <header id="bar" aria-live="polite">
   <div class="row">
     <div class="ico" id="ico">⏳</div>
@@ -98,7 +112,7 @@
   </div>
   <div class="msg"><p id="msg-ar"></p><p id="msg-fr" class="fr"></p></div>
 </header>
-<div id="stale">البيانات قديمة، لا تعتمد عليها · Données périmées</div>
+<div id="stale">البيانات قديمة: المراقبة غير متاحة حالياً، وهذا لا يعني أن الوضع آمن · Données périmées : surveillance indisponible, ce qui ne veut pas dire « sans danger »</div>
 
 <main>
   <div class="mapwrap">
@@ -136,10 +150,21 @@
     </div>
 
     <div class="card">
-      <h2>📈 الأمطار المتوقعة 48 ساعة <small>· pire modèle, mm/h</small></h2>
+      <h2>📈 الأمطار المتوقعة 48 ساعة <small>· prévision modélisée, pas une mesure (mm/h)</small></h2>
       <svg id="chart" viewBox="0 0 600 150" preserveAspectRatio="none" role="img" aria-label="Pluie prévue heure par heure"></svg>
       <div class="tip" id="tip">Touchez une barre pour voir l'heure et la valeur.</div>
       <p class="mute fr" id="fc-note" style="margin:6px 0 0"></p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h2>🌡️ محطة آسفي الرسمية <small dir="ltr">· DGM, WIGOS 0-20000-0-60185</small></h2>
+      <div class="stats" style="grid-template-columns:1fr"><div class="stat na"><b>غير متصلة</b><span>Non connectée : point d'accès public injoignable pour le moment</span></div></div>
+    </div>
+    <div class="card">
+      <h2>🌊 منسوب الواد <small>· niveau de l'eau</small></h2>
+      <div class="stats" style="grid-template-columns:1fr"><div class="stat na"><b>غير متاح</b><span>Aucun capteur installé dans l'oued : niveau inconnu</span></div></div>
     </div>
   </div>
 
@@ -172,21 +197,17 @@
     </ul>
   </div>
 
-  <p class="mute">تقدير آلي غير رسمي. اتبع دائماً تعليمات السلطات والمديرية العامة للأرصاد الجوية.</p>
-  <p class="mute fr">Estimation automatique non officielle : prévisions Open-Meteo, observation EUMETSAT (Meteosat), tracé de l'oued © OpenStreetMap (nommé « Oued Abdallah ben Moussa » dans OSM). <span id="upd"></span></p>
+  <p class="mute">نموذج تجريبي لا يصدر أي إنذار. المستوى المعروض في الأعلى مصدره النشرات الرسمية للمديرية العامة للأرصاد الجوية فقط. اتبع دائماً تعليمات السلطات والوقاية المدنية.</p>
+  <p class="mute fr">Prototype : il ne publie aucune alerte. Le niveau en haut vient uniquement des bulletins officiels de la DGM. Données : prévisions Open-Meteo, observation EUMETSAT (Meteosat), tracé de l'oued © OpenStreetMap (nommé « Oued Abdallah ben Moussa » dans OSM). <span id="upd"></span></p>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const WIN = {'1h':1, '3h':3, '6h':6, '24h':24};
-const NAMES_FR = ['Vert','Jaune','Orange','Rouge'], NAMES_AR = ['أخضر','أصفر','برتقالي','أحمر'];
-const HEAD_AR = ['لا خطر حالياً','يقظة','انتبه — خطر فيضان','خطر — ابتعد عن الواد الآن'];
-const HEAD_FR = ['Pas de danger actuellement','Vigilance','Attention — risque de crue','Danger — quittez les abords de l\'oued'];
-const ICONS = ['✅','⚠️','🚨','🆘'];
 const pad = n => String(n).padStart(2, '0');
 const t = x => (x || '').replace('T', ' ');
-let CFG = null, OUED = [], dismissed = -1;
+let CFG = null, OUED = [], dismissed = null;
 
 /* ---------- Carte ---------- */
 const map = L.map('map', {zoomControl:false, attributionControl:true}).setView([32.315, -9.205], 13);
@@ -300,8 +321,8 @@ $('locate').onclick = () => {
   }, () => { $('locate').textContent = '📍 أين أنا؟'; }, {enableHighAccuracy:true, timeout:15000});
 };
 
-/* ---------- Previsions en direct (Open-Meteo) ---------- */
-async function live() {
+/* ---------- Previsions (Open-Meteo) : valeurs brutes, aucun niveau deduit ---------- */
+async function forecast() {
   const q = new URLSearchParams({
     latitude: CFG.points.map(p => p.lat).join(','), longitude: CFG.points.map(p => p.lon).join(','),
     hourly: 'precipitation,wind_gusts_10m', models: CFG.models.join(','),
@@ -310,46 +331,30 @@ async function live() {
   const r = await fetch('https://api.open-meteo.com/v1/forecast?' + q.toString().replace(/%2C/g, ','));
   if (!r.ok) throw new Error('open-meteo ' + r.status);
   let data = await r.json(); if (!Array.isArray(data)) data = [data];
-  let worst = null, gust = {kmh:0, when:null}, levels = {}, offset = 0, series = null, stimes = null;
-  const rainLevel = sums => { for (const l of [3,2,1]) if (Object.keys(WIN).some(w => sums[w].mm >= CFG.rain_thresholds_mm[l][w])) return l; return 0; };
-  data.forEach((loc, i) => {
-    const h = loc.hourly, tms = h.time; offset = loc.utc_offset_seconds || 0;
-    if (!series) { series = new Array(tms.length).fill(0); stimes = tms; }
-    const point = (CFG.points[i] || {}).name || ('point ' + i);
+  let series = null, stimes = null, offset = 0, gust = {kmh:0, when:null}, models = new Set(), max = {};
+  data.forEach(loc => {
+    const h = loc.hourly; offset = loc.utc_offset_seconds || 0;
+    if (!series) { series = new Array(h.time.length).fill(0); stimes = h.time; }
     for (const key in h) {
       const isRain = key === 'precipitation' || key.startsWith('precipitation_');
       const isGust = key === 'wind_gusts_10m' || key.startsWith('wind_gusts_10m_');
       if ((!isRain && !isGust) || !h[key] || h[key].every(v => v === null)) continue;
       const vals = h[key].map(v => v || 0);
-      if (isGust) { const m = Math.max(...vals); if (m > gust.kmh) gust = {kmh:Math.round(m), when:tms[vals.indexOf(m)]}; continue; }
+      if (isGust) { const m = Math.max(...vals); if (m > gust.kmh) gust = {kmh:Math.round(m), when:h.time[vals.indexOf(m)]}; continue; }
+      models.add(key);
       vals.forEach((v, j) => { if (v > series[j]) series[j] = v; });
-      const model = key.slice('precipitation'.length).replace(/^_/, '') || 'best_match';
-      const sums = {};
-      for (const w in WIN) {
-        let best = 0, at = 0;
-        for (let s = 0; s < vals.length; s++) { let tot = 0; for (let k = s; k < Math.min(s + WIN[w], vals.length); k++) tot += vals[k]; if (tot > best) { best = tot; at = s; } }
-        sums[w] = {mm: Math.round(best * 10) / 10, start: tms[at]};
+      for (const w in WIN) for (let s = 0; s < vals.length; s++) {
+        let tot = 0; for (let k = s; k < Math.min(s + WIN[w], vals.length); k++) tot += vals[k];
+        if (!max[w] || tot > max[w].mm) max[w] = {mm: Math.round(tot * 10) / 10, start: h.time[s]};
       }
-      const lvl = rainLevel(sums);
-      levels[model] = Math.max(levels[model] || 0, lvl);
-      if (!worst || lvl > worst.level || (lvl === worst.level && sums['6h'].mm > worst.sums['6h'].mm)) worst = {level:lvl, model, point, sums};
     }
   });
-  if (!worst) throw new Error('pas de donnees');
-  const now = new Date(), nowLocal = new Date(now.getTime() + offset * 1000).toISOString().slice(0, 16);
-  const rl = worst.level;
-  let fr = CFG.messages_fr[rl], ar = CFG.messages_ar[rl];
-  if (gust.kmh >= CFG.gust_thresholds_kmh[1]) {
-    fr += " Vent : rafales jusqu'à " + gust.kmh + ' km/h selon le modèle le plus pessimiste.';
-    ar += ' الرياح: هبات قد تصل إلى ' + gust.kmh + ' كلم/س حسب أكثر النماذج تشاؤماً.';
-  }
-  return {live:true, updated_utc:now.toISOString(), updated_local:nowLocal, level:rl, message_fr:fr, message_ar:ar,
-    rain:{worst_model:worst.model, worst_point:worst.point, sums:worst.sums,
-      models_agree:Object.values(levels).filter(v => v >= Math.max(rl, 1)).length, models_total:Object.keys(levels).length},
-    wind:gust, series, stimes, official:(CFG.official || []).filter(o => o.end >= nowLocal)};
+  if (!series) throw new Error('pas de donnees');
+  const nowLocal = new Date(Date.now() + offset * 1000).toISOString().slice(0, 16);
+  return {series, stimes, max, gust, nowLocal, n: models.size};
 }
 
-/* Dernier calcul du bot (observation satellite incluse) */
+/* Mesures enregistrees par le bot (satellite) */
 async function botStatus() {
   const owner = location.hostname.split('.')[0], repo = location.pathname.split('/')[1];
   if (location.hostname.endsWith('.github.io') && repo) {
@@ -361,93 +366,97 @@ async function botStatus() {
   return await (await fetch('status.json?t=' + Date.now())).json();
 }
 
-/* ---------- Graphique 48 h ---------- */
-function chart(series, stimes, nowLocal) {
+/* ---------- Graphique 48 h (sans seuils inventes) ---------- */
+function chart(f) {
   const svg = $('chart'); svg.textContent = '';
-  if (!series) return;
-  const NS = 'http://www.w3.org/2000/svg', W = 600, H = 150, top = 8, bottom = 18;
-  const red = CFG.rain_thresholds_mm[3]['1h'], orange = CFG.rain_thresholds_mm[2]['1h'];
-  const max = Math.max(orange * 1.2, ...series);
+  if (!f) return;
+  const {series, stimes, nowLocal} = f;
+  const NS = 'http://www.w3.org/2000/svg', W = 600, H = 150, top = 8, bottom = 18, REF = 19;
+  const max = Math.max(REF * 1.1, ...series);
   const y = v => H - bottom - (v / max) * (H - top - bottom);
   const bw = W / series.length;
   const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; };
-  [[orange, '#ea6c0a'], [red, '#d11f1f']].forEach(([v, c]) => { if (v <= max) el('line', {x1:0, x2:W, y1:y(v), y2:y(v), stroke:c, 'stroke-dasharray':'5 4', 'stroke-width':1.5}); });
-  const nowIdx = stimes.findIndex(s => s.slice(0, 13) === (nowLocal || '').slice(0, 13));
+  el('line', {x1:0, x2:W, y1:y(REF), y2:y(REF), stroke:'#94a1b0', 'stroke-dasharray':'5 4', 'stroke-width':1.2});
+  const lb = el('text', {x:4, y:y(REF) - 4, fill:'#94a1b0', 'font-size':11}); lb.textContent = '19 mm/h : pluie observée le 14/12/2025';
+  const nowIdx = stimes.findIndex(s => s.slice(0, 13) === nowLocal.slice(0, 13));
   series.forEach((v, i) => {
-    const c = v >= red ? '#d11f1f' : v >= orange ? '#ea6c0a' : v >= CFG.rain_thresholds_mm[1]['1h'] ? '#e5b300' : '#38bdf8';
-    const r = el('rect', {x:i * bw + 1, y:y(v), width:Math.max(1, bw - 2), height:Math.max(.5, H - bottom - y(v)), fill:c, rx:1.5, opacity: i < nowIdx ? .4 : 1});
+    el('rect', {x:i * bw + 1, y:y(v), width:Math.max(1, bw - 2), height:Math.max(.5, H - bottom - y(v)), fill:'#38bdf8', rx:1.5, opacity: i < nowIdx ? .4 : 1});
     const hit = el('rect', {x:i * bw, y:0, width:bw, height:H, fill:'transparent'});
-    const tell = () => { $('tip').textContent = t(stimes[i]) + ' → ' + v.toFixed(1) + ' mm/h (scénario le plus pessimiste)'; };
+    const tell = () => { $('tip').textContent = t(stimes[i]) + ' → ' + v.toFixed(1) + ' mm/h (valeur la plus forte parmi les modèles et les points)'; };
     hit.addEventListener('pointerenter', tell); hit.addEventListener('click', tell);
   });
   if (nowIdx >= 0) el('line', {x1:nowIdx * bw, x2:nowIdx * bw, y1:0, y2:H - bottom, stroke:'#fff', 'stroke-width':1});
   stimes.forEach((s, i) => { if (s.slice(11, 13) === '00') { const tx = el('text', {x:i * bw + 2, y:H - 4, fill:'#94a1b0', 'font-size':11}); tx.textContent = s.slice(8, 10) + '/' + s.slice(5, 7); } });
 }
 
-/* ---------- Affichage ---------- */
-function render(s, o, fresh) {
-  const lv = s.level;
-  document.body.className = 'l' + lv;
-  $('ico').textContent = ICONS[lv];
-  $('head').innerHTML = HEAD_AR[lv] + '<small dir="ltr">' + HEAD_FR[lv] + ' · niveau ' + NAMES_FR[lv].toLowerCase() + '</small>';
-  $('msg-ar').textContent = s.message_ar; $('msg-fr').textContent = s.message_fr;
+/* ---------- Bandeau : bulletins officiels uniquement ---------- */
+const OFF_HEAD_AR = ['', 'نشرة رسمية: يقظة صفراء', 'نشرة إنذارية رسمية: يقظة برتقالية', 'نشرة إنذارية رسمية: يقظة حمراء'];
+const OFF_HEAD_FR = ['', 'Bulletin officiel : vigilance jaune', 'Bulletin officiel : vigilance orange', 'Bulletin officiel : vigilance rouge'];
+function banner(nowLocal) {
+  const offs = (CFG.official || []).filter(o => o.end >= nowLocal).sort((a, b) => a.start.localeCompare(b.start));
+  const active = offs.filter(o => o.start <= nowLocal).sort((a, b) => b.level - a.level)[0];
+  const next = active || offs[0];
+  if (!next) {
+    document.body.className = 'lx';
+    $('ico').textContent = 'ℹ️';
+    $('head').innerHTML = 'لا توجد نشرة إنذارية رسمية سارية لآسفي<small dir="ltr">Aucun bulletin d\'alerte officiel en cours pour Safi</small>';
+    $('msg-ar').textContent = 'هذا لا يعني انعدام الخطر. تابع الأرصاد الجوية والسلطات، وراقب السماء والواد.';
+    $('msg-fr').textContent = 'Cela ne signifie pas qu\'il n\'y a aucun risque. Suivez la DGM et les autorités, et surveillez le ciel et l\'oued.';
+    return;
+  }
+  document.body.className = 'l' + next.level;
+  $('ico').textContent = next.level >= 2 ? '🚨' : '⚠️';
+  const when = active ? 'سارية الآن حتى ' + t(next.end).slice(11) : 'من ' + t(next.start) + ' إلى ' + t(next.end).slice(11);
+  const whenFr = active ? 'en cours jusqu\'à ' + t(next.end).slice(11) : 'du ' + t(next.start) + ' au ' + t(next.end).slice(11);
+  $('head').innerHTML = OFF_HEAD_AR[next.level] + '<small dir="ltr">' + OFF_HEAD_FR[next.level] + ' · ' + whenFr + '</small>';
+  $('msg-ar').textContent = next.ar + ' (' + when + ')';
+  $('msg-fr').textContent = next.fr + ' Source : ' + next.source + '.';
+  if (active && active.level >= 2 && dismissed !== active.start) {
+    $('ov-ar').textContent = active.ar; $('ov-fr').textContent = active.fr + ' — ' + active.source;
+    $('overlay').style.display = 'flex';
+    $('ov-ok').onclick = () => { dismissed = active.start; $('overlay').style.display = 'none'; };
+    if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+  }
+}
 
+/* ---------- Mesures satellite : brutes, avec heure et source ---------- */
+function observations(bot) {
+  const o = bot && bot.obs;
+  const fresh = !!(bot && (Date.now() - Date.parse(bot.updated_utc)) < 40 * 60e3);
+  ['s-rate', 's-acc', 's-li'].forEach(id => $(id).className = 'stat');
   if (o && o.ok && fresh) {
     $('s-rate').querySelector('b').textContent = o.rate_now_mmh;
     $('s-acc').querySelector('b').textContent = o.accum_1h_mm;
     $('s-li').querySelector('b').textContent = o.lightning_basin ? 'نعم' : 'لا';
-    $('s-rate').className = 'stat' + (o.rate_now_mmh >= CFG.obs_thresholds.rate_orange ? ' hot' : o.rate_now_mmh >= CFG.obs_thresholds.rate_yellow ? ' warm' : '');
-    $('s-acc').className = 'stat' + (o.accum_1h_mm >= CFG.obs_thresholds.accum_red ? ' hot' : o.accum_1h_mm >= CFG.obs_thresholds.accum_orange ? ' warm' : '');
-    $('s-li').className = 'stat' + (o.lightning_basin ? ' hot' : o.lightning_near ? ' warm' : '');
-    $('obs-note').textContent = 'Image pluie d\'il y a ' + o.rain_age_min + ' min, éclairs d\'il y a ' + o.lightning_age_min + ' min.' + (o.lightning_near && !o.lightning_basin ? ' Éclairs détectés à moins de 60 km.' : '');
+    const hm = s => (s || '').slice(11, 16);
+    $('obs-note').textContent = 'Estimation satellite (EUMETSAT, Meteosat MTG : H SAF H40B et Lightning Imager), pas un pluviomètre. Image pluie de ' +
+      hm(o.rain_image_utc) + ' UTC, éclairs de ' + hm(o.lightning_image_utc) + ' UTC.' + (o.lightning_near && !o.lightning_basin ? ' Éclairs détectés à moins de 60 km.' : '');
+    $('stale').style.display = 'none';
   } else {
-    ['s-rate', 's-acc', 's-li'].forEach(id => { $(id).className = 'stat'; $(id).querySelector('b').textContent = '–'; });
-    $('obs-note').textContent = 'Mesure satellite chiffrée indisponible pour le moment : regardez la carte animée ci-dessus.';
-  }
-
-  if (s.rain) {
-    const m = s.rain.sums;
-    $('fc-note').textContent = 'Max : ' + m['1h'].mm + ' mm en 1 h, ' + m['6h'].mm + ' mm en 6 h · accord des modèles ' + s.rain.models_agree + '/' + s.rain.models_total +
-      (s.wind && s.wind.kmh ? ' · rafale max ' + s.wind.kmh + ' km/h' : '') + ' · repère 2025 : 19 mm en 1 h.';
-  }
-  chart(s.series, s.stimes, s.updated_local);
-  $('upd').textContent = 'Mis à jour : ' + t(s.updated_local) + '.';
-
-  $('official').textContent = '';
-  $('official-card').style.display = (s.official && s.official.length) ? '' : 'none';
-  (s.official || []).forEach(x => {
-    const a = document.createElement('p'); a.textContent = x.ar; a.style.margin = '0 0 4px';
-    const f = document.createElement('p'); f.className = 'fr mute'; f.style.margin = '0';
-    f.textContent = x.fr + ' Du ' + t(x.start) + ' au ' + t(x.end) + '.';
-    $('official').append(a, f);
-  });
-
-  const ageH = (Date.now() - Date.parse(s.updated_utc)) / 36e5;
-  $('stale').style.display = ageH > 1 ? 'block' : 'none';
-  if (lv >= 2 && ageH <= 1 && lv > dismissed) {
-    $('ov-ar').textContent = s.message_ar; $('ov-fr').textContent = s.message_fr;
-    $('overlay').style.display = 'flex';
-    $('ov-ok').onclick = () => { dismissed = lv; $('overlay').style.display = 'none'; };
-    if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+    ['s-rate', 's-acc', 's-li'].forEach(id => { $(id).className = 'stat na'; $(id).querySelector('b').textContent = 'غير متاح'; });
+    $('obs-note').textContent = 'Surveillance satellite chiffrée indisponible' + (bot ? ' (dernière mesure : ' + t(bot.updated_local) + ')' : '') +
+      '. Cela ne veut pas dire « sans danger » : regardez la carte animée et le ciel.';
+    $('stale').style.display = 'block';
   }
 }
 
 async function refresh() {
   if (!CFG) CFG = await (await fetch('config.json?t=' + Date.now())).json();
-  let fc = null, bot = null;
-  try { fc = await live(); } catch (e) {}
+  let f = null, bot = null;
+  try { f = await forecast(); } catch (e) {}
   try { bot = await botStatus(); } catch (e) {}
-  if (bot && (bot.level === undefined || bot.level < 0)) bot = null;
-  const s = fc || bot;
-  if (!s) { $('head').innerHTML = 'تعذر تحميل البيانات<small>Données indisponibles</small>'; $('stale').style.display = 'block'; return; }
-  const o = bot && bot.obs, fresh = !!(bot && (Date.now() - Date.parse(bot.updated_utc)) < 40 * 60e3);
-  if (o && o.ok && fresh && o.level >= 1) {   // l'observation en direct passe avant la prevision
-    const base = s.level;
-    s.message_fr = o.level > base ? o.message_fr : o.message_fr + ' ' + s.message_fr;
-    s.message_ar = o.level > base ? o.message_ar : o.message_ar + ' ' + s.message_ar;
-    s.level = Math.max(base, o.level);
+  const nowLocal = f ? f.nowLocal : new Date().toISOString().slice(0, 16);
+  banner(nowLocal);
+  observations(bot);
+  chart(f);
+  if (f) {
+    $('fc-note').textContent = 'Open-Meteo, ' + f.n + ' séries (modèles × points), récupérées à ' + t(f.nowLocal).slice(11) +
+      '. Max : ' + f.max['1h'].mm + ' mm en 1 h (vers ' + t(f.max['1h'].start) + '), ' + f.max['6h'].mm + ' mm en 6 h, ' + f.max['24h'].mm + ' mm en 24 h' +
+      (f.gust.kmh ? ' · rafale max ' + f.gust.kmh + ' km/h vers ' + t(f.gust.when) : '') + '.';
+  } else {
+    $('fc-note').textContent = 'Prévisions indisponibles pour le moment.';
   }
-  render(s, o, fresh);
+  $('upd').textContent = 'Page mise à jour à ' + t(nowLocal).slice(11) + '.';
 }
 refresh().catch(() => {});
 setInterval(() => { refresh().catch(() => {}); buildFrames(); }, 5 * 60e3);

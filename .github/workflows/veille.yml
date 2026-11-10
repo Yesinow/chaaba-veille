@@ -2,12 +2,11 @@ name: Veille oued Chaaba
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # toutes les 10 minutes
+    - cron: "*/10 * * * *"   # toutes les 10 minutes (GitHub peut retarder)
   workflow_dispatch:
 
 permissions:
   contents: write
-  issues: write
 
 concurrency:
   group: veille
@@ -22,18 +21,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Calcul du niveau de vigilance
-        id: run
+      # Etat prive des notifications (jamais publie dans le depot)
+      - uses: actions/cache@v4
+        with:
+          path: .state
+          key: notify-${{ github.run_id }}
+          restore-keys: notify-
+
+      - name: Mesures, previsions et notification privee
         env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python monitor.py
-
-      - name: Ouvrir une alerte (issue)
-        if: steps.run.outputs.notify == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh issue create --title "${{ steps.run.outputs.title }}" --body-file alert.md
 
       - name: Enregistrer status.json
         if: always()
