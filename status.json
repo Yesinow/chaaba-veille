@@ -1,15 +1,8 @@
 {
-  "updated_utc": "2026-11-10T02:50:50Z",
-  "updated_local": "2026-11-10T02:50",
-  "level": 1,
-  "level_fr": "Jaune",
-  "level_ar": "أصفر",
-  "message_fr": "Pluie notable prévue. Restez informé et surveillez les bulletins officiels. Vent : rafales jusqu'à 91 km/h selon le modèle le plus pessimiste.",
-  "message_ar": "أمطار مهمة متوقعة. ابقَ على اطلاع وتابع النشرات الرسمية. الرياح: هبات قد تصل إلى 91 كلم/س حسب أكثر النماذج تشاؤماً.",
-  "forecast_level": 1,
+  "updated_utc": "2026-11-10T06:12:13Z",
+  "updated_local": "2026-11-10T06:12",
   "obs": {
     "ok": true,
-    "level": 0,
     "rate_now_mmh": 0.0,
     "rate_max_1h_mmh": 0.0,
     "accum_1h_mm": 0.0,
@@ -23,49 +16,37 @@
       "rain_near": 0,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-10T02:20Z",
-    "lightning_image_utc": "2026-11-10T02:35Z",
-    "rain_age_min": 30,
-    "lightning_age_min": 15,
+    "rain_image_utc": "2026-11-10T05:30Z",
+    "lightning_image_utc": "2026-11-10T05:40Z",
+    "rain_age_min": 42,
+    "lightning_age_min": 32,
     "failed_requests": 0,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
-  "rain": {
-    "level": 1,
-    "worst_model": "gfs_seamless",
-    "worst_point": "Amont nord",
-    "sums": {
-      "1h": {
-        "mm": 4.7,
-        "start": "2026-11-11T17:00"
-      },
-      "3h": {
-        "mm": 10.0,
-        "start": "2026-11-11T17:00"
-      },
-      "6h": {
-        "mm": 16.6,
-        "start": "2026-11-11T17:00"
-      },
-      "24h": {
-        "mm": 21.0,
-        "start": "2026-11-11T01:00"
-      }
+  "forecast": {
+    "fetched_local": "2026-11-10T06:12",
+    "max_1h": {
+      "mm": 8.3,
+      "start": "2026-11-11T23:00"
     },
-    "models_agree": 2,
+    "max_3h": {
+      "mm": 20.1,
+      "start": "2026-11-11T23:00"
+    },
+    "max_6h": {
+      "mm": 31.6,
+      "start": "2026-11-11T22:00"
+    },
+    "max_24h": {
+      "mm": 39.6,
+      "start": "2026-11-11T05:00"
+    },
+    "model": "meteofrance_seamless",
+    "point": "Amont nord-est",
     "models_total": 4,
-    "model_levels": {
-      "ecmwf_ifs025": 1,
-      "gfs_seamless": 1,
-      "icon_seamless": 0,
-      "meteofrance_seamless": 0
-    }
-  },
-  "wind": {
-    "level": 3,
-    "kmh": 91,
-    "when": "2026-11-11T20:00",
-    "model": "icon_seamless"
+    "gust_max_kmh": 91,
+    "gust_when": "2026-11-11T15:00",
+    "source": "Open-Meteo : prévision modélisée horaire, pas une mesure"
   },
   "official": [
     {
@@ -77,5 +58,11 @@
       "ar": "يقظة برتقالية: هبات رياح قوية (من 70 إلى 80 كلم/س) مصحوبة بتطاير الغبار، إقليم آسفي."
     }
   ],
-  "source": "Open-Meteo (ECMWF, GFS, ICON, Meteo-France). Indicatif, non officiel."
+  "station_safi": {
+    "wigos_id": "0-20000-0-60185",
+    "status": "non connectée (point d'accès injoignable depuis le bot)"
+  },
+  "river_level": {
+    "status": "aucun capteur installé"
+  }
 }
