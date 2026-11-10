@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-10T01:19:33Z",
-  "updated_local": "2026-11-10T01:19",
+  "updated_utc": "2026-11-10T02:50:50Z",
+  "updated_local": "2026-11-10T02:50",
   "level": 1,
   "level_fr": "Jaune",
   "level_ar": "أصفر",
@@ -23,10 +23,10 @@
       "rain_near": 0,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-10T01:00Z",
-    "lightning_image_utc": "2026-11-10T01:05Z",
-    "rain_age_min": 19,
-    "lightning_age_min": 14,
+    "rain_image_utc": "2026-11-10T02:20Z",
+    "lightning_image_utc": "2026-11-10T02:35Z",
+    "rain_age_min": 30,
+    "lightning_age_min": 15,
     "failed_requests": 0,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
