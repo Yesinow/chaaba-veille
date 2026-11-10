@@ -89,13 +89,13 @@
   },
   "obs_messages_fr": [
     "",
-    "Pluie ou orage détecté par satellite près de Safi. Restez vigilant et surveillez le ciel.",
+    "Orage ou forte pluie détecté par satellite à moins de 60 km de Safi. Restez vigilant et surveillez le ciel.",
     "ORAGE EN COURS détecté par satellite sur le bassin de l'oued Chaâba. L'oued peut monter en moins d'une heure : éloignez-vous maintenant du lit de l'oued, de Bab Chaâba et des points bas.",
     "DANGER IMMÉDIAT : pluie très intense détectée par satellite sur le bassin de l'oued Chaâba. Quittez tout de suite les abords de l'oued et les rez-de-chaussée des zones basses, montez en hauteur. Ne traversez aucune rue inondée."
   ],
   "obs_messages_ar": [
     "",
-    "رصد القمر الاصطناعي أمطاراً أو عاصفة رعدية قرب آسفي. ابقَ يقظاً وراقب السماء.",
+    "رصد القمر الاصطناعي عاصفة رعدية أو أمطاراً قوية على بعد أقل من 60 كلم من آسفي. ابقَ يقظاً وراقب السماء.",
     "عاصفة رعدية جارية الآن فوق حوض واد الشعبة حسب القمر الاصطناعي. قد يرتفع الواد في أقل من ساعة: ابتعد الآن عن مجرى الواد وباب الشعبة والمناطق المنخفضة.",
     "خطر فوري: أمطار شديدة جداً رصدها القمر الاصطناعي فوق حوض واد الشعبة. غادر فوراً جنبات الواد والطوابق الأرضية بالمناطق المنخفضة واصعد إلى مكان مرتفع. لا تعبر أي شارع مغمور بالمياه."
   ]

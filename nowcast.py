@@ -26,12 +26,20 @@ W, H = 60, 50
 def _get(params, timeout=60):
     url = WMS + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "chaaba-veille"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read()
+    for attempt in (1, 2):   # le serveur renvoie parfois 504 : on reessaie une fois
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read()
+        except Exception:
+            if attempt == 2:
+                raise
 
 
 def _png_alpha(data):
-    """Decodeur PNG minimal (8 bits, non entrelace) -> lignes de booleens 'pixel colore'."""
+    """Decodeur PNG minimal (8 bits, non entrelace).
+
+    Renvoie des lignes de codes : 0 = rien, 1 = pixel colore, 2 = pixel a dominante bleue/violette
+    (dans la legende H40B : vert < 10 mm/h, bleu/violet/magenta >= 10 mm/h)."""
     if data[:8] != b"\x89PNG\r\n\x1a\n":
         raise ValueError("pas un PNG")
     pos, idat, plte, trns = 8, b"", None, None
@@ -74,16 +82,21 @@ def _png_alpha(data):
         for x in range(w):
             px = line[x * ch:(x + 1) * ch]
             if ctype == 6:
-                on = px[3] > 0 and (px[0] or px[1] or px[2])
+                r, g, b, alpha = px
             elif ctype == 4:
-                on = px[1] > 0 and px[0] > 0
+                r = g = b = px[0]
+                alpha = px[1]
             elif ctype == 3:
                 alpha = trns[px[0]] if trns is not None and px[0] < len(trns) else 255
-                rgb = plte[px[0] * 3:px[0] * 3 + 3] if plte else b"\x01"
-                on = alpha > 0 and any(rgb)
+                r, g, b = plte[px[0] * 3:px[0] * 3 + 3]
+            elif ctype == 2:
+                r, g, b = px
+                alpha = 255
             else:
-                on = any(px)
-            out.append(bool(on))
+                r = g = b = px[0]
+                alpha = 255
+            on = alpha > 0 and (r or g or b)
+            out.append(0 if not on else 2 if b > g else 1)
         rows.append(out)
     return rows
 
@@ -94,16 +107,17 @@ def _count(layer, time):
     png = _get({"service": "WMS", "version": "1.3.0", "request": "GetMap", "layers": layer, "styles": "",
                 "crs": "EPSG:4326", "bbox": f"{s},{w},{n},{e}", "width": W, "height": H,
                 "format": "image/png", "transparent": "true", "time": time})
-    near = basin = 0
+    near = basin = heavy = 0
     for y, row in enumerate(_png_alpha(png)):
         lat = n - (y + 0.5) / H * (n - s)
-        for x, on in enumerate(row):
-            if on:
+        for x, code in enumerate(row):
+            if code:
                 lon = w + (x + 0.5) / W * (e - w)
                 near += 1
+                heavy += code == 2
                 if BASIN[0] <= lat <= BASIN[2] and BASIN[1] <= lon <= BASIN[3]:
                     basin += 1
-    return near, basin
+    return near, basin, heavy
 
 
 def _rate(lat, lon, time):
@@ -153,14 +167,14 @@ def _observe(cfg):
     pts = cfg["points"]
 
     jobs = {}
-    with cf.ThreadPoolExecutor(8) as ex:
+    with cf.ThreadPoolExecutor(4) as ex:
         for t in light_times:
             jobs[ex.submit(_count, LIGHT, _iso(t))] = ("light", t)
         jobs[ex.submit(_count, RAIN, _iso(t_rain))] = ("rainmap", t_rain)
         for i, p in enumerate(pts):
             for t in rain_times:
                 jobs[ex.submit(_rate, p["lat"], p["lon"], _iso(t))] = ("rate", i, t)
-        light_near = light_basin = rain_near = rain_basin = failed = 0
+        light_near = light_basin = rain_near = rain_heavy = failed = 0
         rates = {}
         for fut in cf.as_completed(jobs):
             key = jobs[fut]
@@ -174,7 +188,7 @@ def _observe(cfg):
                 light_near += res[0]
                 light_basin += res[1]
             elif key[0] == "rainmap":
-                rain_near, rain_basin = res
+                rain_near, _, rain_heavy = res
             else:
                 rates[(key[1], key[2])] = res
     if failed > len(jobs) / 2:
@@ -191,7 +205,7 @@ def _observe(cfg):
             accum, where = max(a, accum), p["name"] if a >= accum else where
 
     level = 0
-    if rate_max >= th["rate_yellow"] or light_near or rain_near:
+    if rate_max >= th["rate_yellow"] or light_near or rain_heavy:
         level = 1
     if rate_max >= th["rate_orange"] or accum >= th["accum_orange"] or light_basin:
         level = 2
@@ -207,7 +221,8 @@ def _observe(cfg):
         "worst_point": where,
         "lightning_basin": bool(light_basin),
         "lightning_near": bool(light_near),
-        "rain_near": bool(rain_near),
+        "heavy_rain_near": bool(rain_heavy),
+        "pixels": {"lightning_near": light_near, "lightning_basin": light_basin, "rain_near": rain_near, "rain_heavy_near": rain_heavy},
         "rain_image_utc": t_rain.strftime("%Y-%m-%dT%H:%MZ"),
         "lightning_image_utc": t_light.strftime("%Y-%m-%dT%H:%MZ"),
         "rain_age_min": int((now - t_rain).total_seconds() // 60),
