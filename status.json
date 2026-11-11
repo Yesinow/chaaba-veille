@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-11T17:52:34Z",
-  "updated_local": "2026-11-11T17:52",
+  "updated_utc": "2026-11-11T23:54:24Z",
+  "updated_local": "2026-11-11T23:54",
   "obs": {
     "ok": true,
     "rate_now_mmh": 0.0,
@@ -16,30 +16,30 @@
       "rain_near": 0,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-11T17:30Z",
-    "lightning_image_utc": "2026-11-11T17:40Z",
-    "rain_age_min": 21,
-    "lightning_age_min": 11,
+    "rain_image_utc": "2026-11-11T23:30Z",
+    "lightning_image_utc": "2026-11-11T23:40Z",
+    "rain_age_min": 24,
+    "lightning_age_min": 14,
     "failed_requests": 0,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
   "forecast": {
-    "fetched_local": "2026-11-11T17:52",
+    "fetched_local": "2026-11-11T23:54",
     "max_1h": {
-      "mm": 3.1,
+      "mm": 3.4,
       "start": "2026-11-11T19:00"
     },
     "max_3h": {
-      "mm": 9.3,
+      "mm": 10.2,
       "start": "2026-11-11T19:00"
     },
     "max_6h": {
-      "mm": 18.3,
-      "start": "2026-11-11T16:00"
+      "mm": 11.8,
+      "start": "2026-11-11T17:00"
     },
     "max_24h": {
-      "mm": 21.9,
-      "start": "2026-11-11T13:00"
+      "mm": 13.3,
+      "start": "2026-11-11T17:00"
     },
     "model": "ecmwf_ifs025",
     "point": "Bab Chaaba (aval)",
@@ -48,16 +48,7 @@
     "gust_when": "2026-11-11T17:00",
     "source": "Open-Meteo : prévision modélisée horaire, pas une mesure"
   },
-  "official": [
-    {
-      "source": "DGM, bulletin d'alerte n° 2026/234 du 09/11/2026",
-      "level": 2,
-      "start": "2026-11-11T12:00",
-      "end": "2026-11-11T23:00",
-      "fr": "Vigilance orange : fortes rafales de vent (70 à 80 km/h) avec chasse-poussières, province de Safi.",
-      "ar": "يقظة برتقالية: هبات رياح قوية (من 70 إلى 80 كلم/س) مصحوبة بتطاير الغبار، إقليم آسفي."
-    }
-  ],
+  "official": [],
   "station_safi": {
     "wigos_id": "0-20000-0-60185",
     "status": "non connectée (point d'accès injoignable depuis le bot)"
