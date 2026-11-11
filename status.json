@@ -1,51 +1,51 @@
 {
-  "updated_utc": "2026-11-10T23:26:49Z",
-  "updated_local": "2026-11-10T23:26",
+  "updated_utc": "2026-11-11T02:54:02Z",
+  "updated_local": "2026-11-11T02:54",
   "obs": {
     "ok": true,
     "rate_now_mmh": 0.0,
-    "rate_max_1h_mmh": 0.1,
-    "accum_1h_mm": 0.1,
-    "worst_point": "Amont nord-est",
+    "rate_max_1h_mmh": 0.0,
+    "accum_1h_mm": 0.0,
+    "worst_point": "Bab Chaaba (aval)",
     "lightning_basin": false,
     "lightning_near": false,
     "heavy_rain_near": false,
     "pixels": {
       "lightning_near": 0,
       "lightning_basin": 0,
-      "rain_near": 224,
+      "rain_near": 181,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-10T23:00Z",
-    "lightning_image_utc": "2026-11-10T23:10Z",
-    "rain_age_min": 25,
-    "lightning_age_min": 15,
+    "rain_image_utc": "2026-11-11T02:30Z",
+    "lightning_image_utc": "2026-11-11T02:40Z",
+    "rain_age_min": 23,
+    "lightning_age_min": 13,
     "failed_requests": 0,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
   "forecast": {
-    "fetched_local": "2026-11-10T23:26",
+    "fetched_local": "2026-11-11T02:54",
     "max_1h": {
-      "mm": 6.1,
-      "start": "2026-11-11T23:00"
+      "mm": 1.8,
+      "start": "2026-11-11T16:00"
     },
     "max_3h": {
-      "mm": 14.3,
-      "start": "2026-11-11T22:00"
+      "mm": 5.4,
+      "start": "2026-11-11T16:00"
     },
     "max_6h": {
-      "mm": 16.8,
-      "start": "2026-11-11T19:00"
+      "mm": 9.6,
+      "start": "2026-11-11T16:00"
     },
     "max_24h": {
-      "mm": 18.0,
-      "start": "2026-11-11T09:00"
+      "mm": 12.9,
+      "start": "2026-11-11T01:00"
     },
-    "model": "gfs_seamless",
-    "point": "Amont nord",
+    "model": "ecmwf_ifs025",
+    "point": "Amont nord-est",
     "models_total": 4,
-    "gust_max_kmh": 102,
-    "gust_when": "2026-11-11T12:00",
+    "gust_max_kmh": 99,
+    "gust_when": "2026-11-11T16:00",
     "source": "Open-Meteo : prévision modélisée horaire, pas une mesure"
   },
   "official": [
