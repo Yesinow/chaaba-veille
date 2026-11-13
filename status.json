@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-13T01:52:01Z",
-  "updated_local": "2026-11-13T01:52",
+  "updated_utc": "2026-11-13T08:50:37Z",
+  "updated_local": "2026-11-13T08:50",
   "obs": {
     "ok": true,
     "rate_now_mmh": 0.0,
@@ -13,39 +13,39 @@
     "pixels": {
       "lightning_near": 0,
       "lightning_basin": 0,
-      "rain_near": 0,
+      "rain_near": 16,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-13T01:20Z",
-    "lightning_image_utc": "2026-11-13T01:35Z",
-    "rain_age_min": 27,
-    "lightning_age_min": 12,
-    "failed_requests": 3,
+    "rain_image_utc": "2026-11-13T08:20Z",
+    "lightning_image_utc": "2026-11-13T08:35Z",
+    "rain_age_min": 28,
+    "lightning_age_min": 13,
+    "failed_requests": 17,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
   "forecast": {
-    "fetched_local": "2026-11-13T01:52",
+    "fetched_local": "2026-11-13T08:50",
     "max_1h": {
       "mm": 0.1,
-      "start": "2026-11-13T05:00"
+      "start": "2026-11-13T07:00"
     },
     "max_3h": {
-      "mm": 0.2,
-      "start": "2026-11-13T04:00"
+      "mm": 0.3,
+      "start": "2026-11-13T07:00"
     },
     "max_6h": {
-      "mm": 0.2,
-      "start": "2026-11-13T01:00"
+      "mm": 0.6,
+      "start": "2026-11-13T07:00"
     },
     "max_24h": {
-      "mm": 0.2,
-      "start": "2026-11-12T19:00"
+      "mm": 0.6,
+      "start": "2026-11-13T02:00"
     },
-    "model": "gfs_seamless",
-    "point": "Amont nord",
+    "model": "ecmwf_ifs025",
+    "point": "Bab Chaaba (aval)",
     "models_total": 4,
-    "gust_max_kmh": 28,
-    "gust_when": "2026-11-13T12:00",
+    "gust_max_kmh": 30,
+    "gust_when": "2026-11-14T16:00",
     "source": "Open-Meteo : prévision modélisée horaire, pas une mesure"
   },
   "official": [],
