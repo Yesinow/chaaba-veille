@@ -1,6 +1,6 @@
 {
-  "updated_utc": "2026-11-14T09:16:44Z",
-  "updated_local": "2026-11-14T09:16",
+  "updated_utc": "2026-11-14T15:51:49Z",
+  "updated_local": "2026-11-14T15:51",
   "obs": {
     "ok": true,
     "rate_now_mmh": 0.0,
@@ -16,36 +16,36 @@
       "rain_near": 0,
       "rain_heavy_near": 0
     },
-    "rain_image_utc": "2026-11-14T08:50Z",
-    "lightning_image_utc": "2026-11-14T09:00Z",
-    "rain_age_min": 26,
+    "rain_image_utc": "2026-11-14T15:20Z",
+    "lightning_image_utc": "2026-11-14T15:35Z",
+    "rain_age_min": 31,
     "lightning_age_min": 16,
     "failed_requests": 0,
     "source": "EUMETSAT Meteosat MTG (H SAF H40B, Lightning Imager) via EUMETView"
   },
   "forecast": {
-    "fetched_local": "2026-11-14T09:16",
+    "fetched_local": "2026-11-14T15:51",
     "max_1h": {
       "mm": 0.0,
-      "start": "2026-11-14T03:00"
+      "start": "2026-11-14T09:00"
     },
     "max_3h": {
       "mm": 0.0,
-      "start": "2026-11-14T03:00"
+      "start": "2026-11-14T09:00"
     },
     "max_6h": {
       "mm": 0.0,
-      "start": "2026-11-14T03:00"
+      "start": "2026-11-14T09:00"
     },
     "max_24h": {
       "mm": 0.0,
-      "start": "2026-11-14T03:00"
+      "start": "2026-11-14T09:00"
     },
     "model": "ecmwf_ifs025",
     "point": "Bab Chaaba (aval)",
     "models_total": 4,
-    "gust_max_kmh": 33,
-    "gust_when": "2026-11-15T16:00",
+    "gust_max_kmh": 34,
+    "gust_when": "2026-11-15T15:00",
     "source": "Open-Meteo : prévision modélisée horaire, pas une mesure"
   },
   "official": [],
